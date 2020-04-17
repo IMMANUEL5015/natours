@@ -1,0 +1,98 @@
+extends base
+
+mixin tourLocations(addressId, descriptionId, longitudeId, latitudeId, dayId, addressText, descriptionText, longitudeText, latitudeText, dayText)
+    .form__group
+        label.form__label(for=`${addressId}` title='Only the first location is absolutely required') #{addressText}
+        input.form__input(type='text', id=`${addressId}`, placeholder='224 Banff Ave, Banff, AB, Canada' name=`${addressId}`)
+        
+        label.form__label(for=`${descriptionId}` title='Only the first location is absolutely required') #{descriptionText}
+        input.form__input(type='text', id=`${descriptionId}`, placeholder='Banff, CAN', name=`${descriptionId}`)
+
+        label.form__label(for=`${longitudeId}` title='Only the first location is absolutely required') #{longitudeText}
+        input.form__input(type='number', id=`${longitudeId}`, placeholder='-115.570154' step='0.0000000000001', name=`${longitudeId}`)
+
+        label.form__label(for=`${latitudeId}` title='Only the first location is absolutely required') #{latitudeText}
+        input.form__input(type='number', id=`${latitudeId}`, placeholder='51.178456' step='0.0000000000001', name=`${latitudeId}`)
+
+        label.form__label(for=`${dayId}`) #{dayText}
+        input.form__input(type='number', id=`${dayId}`, name=`${dayId}`)
+
+mixin tourDates(id, text)
+    .form__group
+        label.form__label(for=`${id}`) #{text}
+        input.form__input(type='datetime-local', id=`${id}` required name=`${id}`)
+
+mixin chooseDifficulty(id, text)
+    .form__group
+        input.radio__input(type='radio' name='difficulty' value=`${id}` id=`${id}`)
+        label.radio__label(for=`${id}`) #{text}
+
+mixin tourDetails(id, text, rows)
+    .form__group
+        label.form__label(for=`${id}`) #{text}
+        textarea.form__input(name=`${id}`, cols="30", rows=`${rows}`, id=`${id}` required)
+
+mixin tourFigures(id, text)
+    .form__group
+        label.form__label(for=`${id}`) #{text}
+        input.form__input(type='number', id=`${id}` required, name=`${id}`)
+
+mixin tourGuides(id, text)
+    label.form__label(for=`${id}`) #{text}
+    input.form__input(type='text', id=`${id}`, name=`${id}`)
+
+block content
+    main.main
+        .signup-form#createNewTour
+            h2.heading-secondary.ma-bt-lg Create New Tour
+            form.form.form--create-new-tour(action='/create-new-tour', method='POST', enctype='multipart/form-data')
+                .form__group
+                    label.form__label(for='name') Tour Name
+                    input#name.form__input(type='text', placeholder='The Ocean Surfer' required, name='name')
+                
+                //Tour Figures
+                +tourFigures('duration', 'Tour Duration')
+                +tourFigures('maxGroupSize', 'Tour Group Size')
+                
+                //Choose difficulty
+                .form__group
+                    label.form__label Select Tour Difficulty:
+                    +chooseDifficulty('easy', 'Easy')
+                    +chooseDifficulty('medium', 'Medium')
+                    +chooseDifficulty('difficult', 'Difficult')
+                
+                +tourFigures('price', 'Tour Price')                
+                
+                +tourDetails('summary', 'Tour Summary', 5)
+                +tourDetails('description', 'Tour Description', 10)
+                
+                //Upload images
+                .form__group.form__photo-upload
+                    input.form__upload(type='file', accept='image/*' id='imageCover', name='imageCover' required)
+                    label(for='imageCover') Choose Cover Image
+                .form__group.form__photo-upload(title="To select multiple files, hold down the CTRL or SHIFT key while selecting.")
+                    input.form__upload(type='file', accept='image/*' id='images', name='images' multiple required)
+                    label(for='images') Upload Tour Images
+
+                //-Dates
+                +tourDates('dateOne', 'Tour First Date')
+                +tourDates('dateTwo', 'Tour Second Date')
+                +tourDates('dateThree', 'Tour Third Date')
+
+                //-Locations
+                +tourLocations('startLocationAddress', 'startLocationDescription', 'longitudeOfStartLocation', 'latitudeOfStartLocation', 'dayToVisitStartLocation', 'Tour First Location Address','Tour First Location Description', 'Tour First Location Longitude', 'Tour First Location Latitude', 'Day to visit first location')
+                +tourLocations('secondLocationAddress', 'secondLocationDescription', 'longitudeOfSecondLocation', 'latitudeOfSecondLocation', 'dayToVisitSecondLocation', 'Tour Second Location Address','Tour Second Location Description', 'Tour Second Location Longitude', 'Tour Second Location Latitude', 'Day to visit second location')                    
+                +tourLocations('thirdLocationAddress', 'thirdLocationDescription', 'longitudeOfThirdLocation', 'latitudeOfThirdLocation', 'dayToVisitThirdLocation', 'Tour Third Location Address','Tour Third Location Description', 'Tour Third Location Longitude', 'Tour Third Location Latitude', 'Day to visit third location')                    
+                +tourLocations('fourthLocationAddress', 'fourthLocationDescription', 'longitudeOfFourthLocation', 'latitudeOfFourthLocation', 'dayToVisitFourthLocation', 'Tour Fourth Location Address','Tour Fourth Location Description', 'Tour Fourth Location Longitude', 'Tour Fourth Location Latitude', 'Day to visit fourth location')                    
+                +tourLocations('fifthLocationAddress', 'fifthLocationDescription', 'longitudeOfFifthLocation', 'latitudeOfFifthLocation', 'dayToVisitFifthLocation', 'Tour Fifth Location Address','Tour Fifth Location Description', 'Tour Fifth Location Longitude', 'Tour Fifth Location Latitude', 'Day to visit fifth location')                    
+                +tourLocations('sixthLocationAddress', 'sixthLocationDescription', 'longitudeOfSixthLocation', 'latitudeOfSixthLocation', 'dayToVisitSixthLocation', 'Tour Sixth Location Address','Tour Sixth Location Description', 'Tour Sixth Location Longitude', 'Tour Sixth Location Latitude', 'Day to visit sixth location')
+
+                //- Tour Guides
+                .form__group
+                    label.form__label Tour Guides:
+                    +tourGuides('firstGuideId', 'First Guide ID')
+                    +tourGuides('secondGuideId', 'Second Guide ID')
+                    +tourGuides('thirdGuideId', 'Third Guide ID')
+                                        
+                .form__group
+                    button.btn.btn--green.btn-create-new-tour Submit

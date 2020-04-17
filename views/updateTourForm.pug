@@ -1,0 +1,131 @@
+extends base
+
+mixin tourLocations(addressId, descriptionId, longitudeId, latitudeId, dayId, addressText, descriptionText, longitudeText, latitudeText, dayText, addressValue, descriptionValue, longitudeValue, latitudeValue, dayValue)
+    .form__group
+        label.form__label(for=`${addressId}` title='Only the first location is absolutely required') #{addressText}
+        input.form__input(type='text', id=`${addressId}`, placeholder='224 Banff Ave, Banff, AB, Canada' name=`${addressId}` value=`${addressValue}`)
+        
+        label.form__label(for=`${descriptionId}` title='Only the first location is absolutely required') #{descriptionText}
+        input.form__input(type='text', id=`${descriptionId}`, placeholder='Banff, CAN', name=`${descriptionId}` value=`${descriptionValue}`)
+
+        label.form__label(for=`${longitudeId}` title='Only the first location is absolutely required') #{longitudeText}
+        input.form__input(type='number', id=`${longitudeId}`, placeholder='-115.570154' step='0.0000000000001', name=`${longitudeId}` value=`${longitudeValue}`)
+
+        label.form__label(for=`${latitudeId}` title='Only the first location is absolutely required') #{latitudeText}
+        input.form__input(type='number', id=`${latitudeId}`, placeholder='51.178456' step='0.0000000000001', name=`${latitudeId}` value=`${latitudeValue}`)
+
+        label.form__label(for=`${dayId}`) #{dayText}
+        input.form__input(type='number', id=`${dayId}`, name=`${dayId}` value=`${dayValue}`)
+
+mixin tourDates(id, text)
+    .form__group
+        label.form__label(for=`${id}`) #{text}
+        input.form__input(type='datetime-local', id=`${id}` name=`${id}`)
+
+mixin chooseDifficulty(id, text)
+    - if(tour.difficulty === id)
+        .form__group
+            input.radio__input(type='radio' name='difficulty' value=`${id}` id=`${id}` checked)
+            label.radio__label(for=`${id}`) #{text}
+    - else
+        .form__group
+            input.radio__input(type='radio' name='difficulty' value=`${id}` id=`${id}`)
+            label.radio__label(for=`${id}`) #{text}
+
+mixin tourGuides(id, text, guidesId)
+    label.form__label(for=`${id}`) #{text}
+    input.form__input(type='text', id=`${id}`, name=`${id}`, value=`${guidesId}`)
+
+mixin tourDetails(id, text, rows, value)
+    .form__group
+        label.form__label(for=`${id}`) #{text}
+        textarea.form__input(name=`${id}`, cols="30", rows=`${rows}`, id=`${id}` required) #{value}
+
+mixin tourFigures(id, text, value)
+    .form__group
+        label.form__label(for=`${id}`) #{text}
+        input.form__input(type='number', id=`${id}` required, name=`${id}` value=`${value}`)
+
+block content
+    main.main
+        .signup-form#updateTourForm
+            h2.heading-secondary.ma-bt-lg Update #{tour.name}
+            p#special-message Any piece of data that is unchanged will be left unaltered.
+            form.form.form--update-tour(action=`/update-tour/${tour.slug}`, method='POST', enctype='multipart/form-data')
+                .form__group
+                    label.form__label(for='name') Update Tour Name
+                    input#name.form__input(type='text', required, name='name', value=`${tour.name}`)
+                
+                //Tour Figures
+                +tourFigures('duration', 'Update Tour Duration', `${tour.duration}`)
+                +tourFigures('maxGroupSize', 'Update Tour Group Size', `${tour.maxGroupSize}`)
+                
+                //Choose difficulty
+                .form__group
+                    label.form__label Update Tour Difficulty:
+                    +chooseDifficulty('easy', 'Easy')
+                    +chooseDifficulty('medium', 'Medium')
+                    +chooseDifficulty('difficult', 'Difficult')
+                
+                +tourFigures('price', 'Update Tour Price', `${tour.price}`)                
+
+                +tourDetails('summary', 'Update Tour Summary', '5', `${tour.summary}`)                
+                +tourDetails('description', 'Update Tour Description', '10', `${tour.description}`)
+                
+                //Upload images
+                .form__group.form__photo-upload
+                    input.form__upload(type='file', accept='image/*' id='imageCover', name='imageCover')
+                    label(for='imageCover') Update Cover Image
+                .form__group.form__photo-upload(title="To select multiple files, hold down the CTRL or SHIFT key while selecting.")
+                    input.form__upload(type='file', accept='image/*' id='images', name='images' multiple)
+                    label(for='images') Update Tour Images
+
+                //-Dates
+                +tourDates('dateOne', 'Update Tour First Date')
+                +tourDates('dateTwo', 'Update Tour Second Date')
+                +tourDates('dateThree', 'Update Tour Third Date')
+
+                //-Locations
+                - if(tour.startLocation && tour.startLocation.address)
+                    +tourLocations('startLocationAddress', 'startLocationDescription', 'longitudeOfStartLocation', 'latitudeOfStartLocation', 'dayToVisitStartLocation', 'Update Tour First Location Address','Update Tour First Location Description', 'Update Tour First Location Longitude', 'Update Tour First Location Latitude', 'Update Day to visit first location', `${tour.startLocation.address}`, `${tour.startLocation.description}`, `${tour.startLocation.coordinates[0]}`, `${tour.startLocation.coordinates[1]}`)
+                - else
+                    +tourLocations('startLocationAddress', 'startLocationDescription', 'longitudeOfStartLocation', 'latitudeOfStartLocation', 'dayToVisitStartLocation', 'Update Tour First Location Address','Update Tour First Location Description', 'Update Tour First Location Longitude', 'Update Tour First Location Latitude', 'Update Day to visit first location', '', '', '', '')
+                - if(tour.locations[0] && tour.locations[0].description)
+                    +tourLocations('secondLocationAddress', 'secondLocationDescription', 'longitudeOfSecondLocation', 'latitudeOfSecondLocation', 'dayToVisitSecondLocation', 'Update Tour Second Location Address','Update Tour Second Location Description', 'Update Tour Second Location Longitude', 'Update Tour Second Location Latitude', 'Update Day to visit second location', `${tour.locations[0].address}`, `${tour.locations[0].description}`, `${tour.locations[0].coordinates[0]}`, `${tour.locations[0].coordinates[1]}`, `${tour.locations[0].day}`)                    
+                - else
+                    +tourLocations('secondLocationAddress', 'secondLocationDescription', 'longitudeOfSecondLocation', 'latitudeOfSecondLocation', 'dayToVisitSecondLocation', 'Update Tour Second Location Address','Update Tour Second Location Description', 'Update Tour Second Location Longitude', 'Update Tour Second Location Latitude', 'Update Day to visit second location', '', '', '', '', '')                    
+                - if(tour.locations[1] && tour.locations[1].description)
+                    +tourLocations('thirdLocationAddress', 'thirdLocationDescription', 'longitudeOfThirdLocation', 'latitudeOfThirdLocation', 'dayToVisitThirdLocation', 'Update Tour Third Location Address','Update Tour Third Location Description', 'Update Tour Third Location Longitude', 'Update Tour Third Location Latitude', 'Update Day to visit third location', `${tour.locations[1].address}`, `${tour.locations[1].description}`, `${tour.locations[1].coordinates[0]}`, `${tour.locations[1].coordinates[1]}`, `${tour.locations[1].day}`)                    
+                - else
+                    +tourLocations('thirdLocationAddress', 'thirdLocationDescription', 'longitudeOfThirdLocation', 'latitudeOfThirdLocation', 'dayToVisitThirdLocation', 'Update Tour Third Location Address','Update Tour Third Location Description', 'Update Tour Third Location Longitude', 'Update Tour Third Location Latitude', 'Update Day to visit third location', '', '', '', '', '')                    
+                - if(tour.locations[2] && tour.locations[2].description)
+                    +tourLocations('fourthLocationAddress', 'fourthLocationDescription', 'longitudeOfFourthLocation', 'latitudeOfFourthLocation', 'dayToVisitFourthLocation', 'Update Tour Fourth Location Address','Update Tour Fourth Location Description', 'Update Tour Fourth Location Longitude', 'Update Tour Fourth Location Latitude', 'Update Day to visit fourth location', `${tour.locations[2].address}`, `${tour.locations[2].description}`, `${tour.locations[2].coordinates[0]}`, `${tour.locations[2].coordinates[1]}`, `${tour.locations[2].day}`)                    
+                - else
+                    +tourLocations('fourthLocationAddress', 'fourthLocationDescription', 'longitudeOfFourthLocation', 'latitudeOfFourthLocation', 'dayToVisitFourthLocation', 'Update Tour Fourth Location Address','Update Tour Fourth Location Description', 'Update Tour Fourth Location Longitude', 'Update Tour Fourth Location Latitude', 'Update Day to visit fourth location', '', '', '', '', '')                    
+                - if(tour.locations[3] && tour.locations[3].description)
+                    +tourLocations('fifthLocationAddress', 'fifthLocationDescription', 'longitudeOfFifthLocation', 'latitudeOfFifthLocation', 'dayToVisitFifthLocation', 'Update Tour Fifth Location Address','Update Tour Fifth Location Description', 'Update Tour Fifth Location Longitude', 'Update Tour Fifth Location Latitude', 'Update Day to visit fifth location', `${tour.locations[3].address}`, `${tour.locations[3].description}`, `${tour.locations[3].coordinates[0]}`, `${tour.locations[3].coordinates[1]}`, `${tour.locations[3].day}`)                    
+                - else
+                    +tourLocations('fifthLocationAddress', 'fifthLocationDescription', 'longitudeOfFifthLocation', 'latitudeOfFifthLocation', 'dayToVisitFifthLocation', 'Update Tour Fifth Location Address','Update Tour Fifth Location Description', 'Update Tour Fifth Location Longitude', 'Update Tour Fifth Location Latitude', 'Update Day to visit fifth location', '', '', '', '', '', '')                    
+                - if(tour.locations[4] && tour.locations[4].description)                
+                    +tourLocations('sixthLocationAddress', 'sixthLocationDescription', 'longitudeOfSixthLocation', 'latitudeOfSixthLocation', 'dayToVisitSixthLocation', 'Update Tour Sixth Location Address','Update Tour Sixth Location Description', 'Update Tour Sixth Location Longitude', 'Update Tour Sixth Location Latitude', 'Update Day to visit sixth location', `${tour.locations[4].address}`, `${tour.locations[4].description}`, `${tour.locations[4].coordinates[0]}`, `${tour.locations[4].coordinates[1]}`, `${tour.locations[4].day}`)
+                - else
+                    +tourLocations('sixthLocationAddress', 'sixthLocationDescription', 'longitudeOfSixthLocation', 'latitudeOfSixthLocation', 'dayToVisitSixthLocation', 'Update Tour Sixth Location Address','Update Tour Sixth Location Description', 'Update Tour Sixth Location Longitude', 'Update Tour Sixth Location Latitude', 'Update Day to visit sixth location', '', '', '', '', '')
+
+                //- Tour Guides
+                .form__group
+                    label.form__label Tour Guides:
+                    - if(tour.guides[0] && tour.guides[0]._id)
+                        +tourGuides('firstGuideId', 'Update First Guide ID', `${tour.guides[0]._id}`)
+                    - else
+                        +tourGuides('firstGuideId', 'Update First Guide ID', '')
+                    - if(tour.guides[1] && tour.guides[1]._id)                    
+                        +tourGuides('secondGuideId', 'Update Second Guide ID', `${tour.guides[1]._id}`)
+                    - else
+                        +tourGuides('secondGuideId', 'Update Second Guide ID', '')
+                    - if(tour.guides[2] && tour.guides[2]._id)
+                        +tourGuides('thirdGuideId', 'Update Third Guide ID', `${tour.guides[2]._id}`)
+                    - else
+                        +tourGuides('thirdGuideId', 'Update Third Guide ID', '')
+
+                .form__group
+                    button.btn.btn--green.btn-update-tour Submit
