@@ -9,6 +9,7 @@ const xss = require('xss-clean');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
 const flash = require('connect-flash');
+const compression = require('compression');
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const viewRouter = require('./routes/viewRoutes');
@@ -83,6 +84,9 @@ app.use(require('express-session')({
     saveUninitialized: false,
     secret: 'I am a son of earth and starry heaven' 
 }));
+
+//Compress all our text responses
+app.use(compression());
 
 //Pass variables to templates using middleware
 app.use(function(req, res, next){
