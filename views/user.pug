@@ -10,11 +10,11 @@ block content
             - else
                 p.roles #{foundUser.role.toUpperCase()}
             
-            - if(user.active === true)
+            - if(foundUser.active === true)
                 p.active Active User
             - else
                 p.active Inactive User
             .user-img
                 img(src=`/img/users/${foundUser.photo}`)
             a.page-links.btn.btn--green(href=`/users?page=1`) All Users            
-            button.btn.btn--green(data-user-id=`${foundUser._id}`) Delete User
+            button.btn.btn--green#deleteUser(data-user-id=`${foundUser._id}`) Delete User
