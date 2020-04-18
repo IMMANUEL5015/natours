@@ -1,7 +1,11 @@
+const fs = require('fs');
+const { promisify } = require('util');
 const mongoose = require('mongoose');
 //const User = require('./userModel');
 const slugify = require('slugify');
 const validator = require('validator');
+const Booking = require('./bookingModel');
+const Review = require('./reviewModel');
 
 const tourSchema = new mongoose.Schema({
     name: {
@@ -182,6 +186,23 @@ tourSchema.pre('aggregate', function (next) {
         next();
     }
     next();
+});
+
+//Delete all bookings and reviews of a deleted tour
+tourSchema.pre(/^findOneAndDelete/, async function (next) {
+    this.tour = await this.findOne();
+    next();
+});
+
+tourSchema.post(/^findOneAndDelete/, async function () {
+    await Booking.deleteMany({ tour: this.tour.id });
+    await Review.deleteMany({ tour: this.tour.id });
+
+    const images = [this.tour.imageCover, this.tour.images[0], this.tour.images[1], this.tour.images[2]];
+    const unlink = promisify(fs.unlink);
+    for (var i = 0; i < images.length; i++) {
+        await unlink(`${__dirname}/../public/img/tours/${images[i]}`);
+    }
 });
 
 const Tour = mongoose.model('Tour', tourSchema);

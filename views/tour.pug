@@ -95,4 +95,6 @@ block content
     - if(!user)
         +bookTour()
     - if((user && user.role === 'admin') || (user && user.role === 'lead-guide'))
-        a.btn.btn--green#updateTour(href=`/update-tour/${tour.slug}`) Update tour
+        .update-and-delete-tour
+            a.btn.btn--green#updateTour(href=`/update-tour/${tour.slug}`) Update tour
+            button.btn.btn--green#deleteTour(data-tour-id=`${tour.id}`) Delete tour
