@@ -6,6 +6,7 @@ import { signup } from './signup';
 import { displayMap } from './mapbox';
 import { updateSettings } from './updateSettings';
 import { bookTour } from './stripe';
+import { deleteTour } from './deleteTour';
 
 //Display tour locations on map for only the tour details page
 const mapBox = document.getElementById('map');
@@ -140,5 +141,17 @@ if (resetPasswordForm) {
         document.querySelector('.btn--reset-password').textContent = 'Reset';
         document.getElementById('password').value = '';
         document.getElementById('passwordConfirm').value = '';
+    });
+}
+
+//Delete a tour
+const deleteTourBtn = document.getElementById('deleteTour');
+if (deleteTourBtn) {
+    deleteTourBtn.addEventListener('click', async (e) => {
+        //using object destructuring
+        deleteTourBtn.textContent = 'Processing...';
+        const { tourId } = e.target.dataset;
+        await deleteTour(tourId);
+        deleteTourBtn.textContent = 'DELETE TOUR';
     });
 }

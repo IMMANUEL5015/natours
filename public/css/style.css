@@ -1379,8 +1379,9 @@ label.radio__label{
 }
 
 /* update tour button */
-#updateTour{
-  width: 300px;
+.update-and-delete-tour{
+  max-width: 700px;
+  width: 100%;
   text-align: center;
   margin-top: 10;
   margin-right: auto;
@@ -1388,6 +1389,10 @@ label.radio__label{
   margin-left: auto;
 }
 
+#deleteTour{
+  height: 50px;
+  margin-left: 15px;
+}
 /* media queries for responsiveness */
 
 /* User Account Page */
@@ -1591,5 +1596,10 @@ label.radio__label{
  }
  .footer{
    font-size: 1.1rem;
+ }
+
+ /* buttons for updating and deleting tour */
+ #deleteTour, #updateTour{
+  margin-top: 15px;
  }
 }
