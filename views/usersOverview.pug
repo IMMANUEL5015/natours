@@ -1,0 +1,25 @@
+extends base
+
+block content
+    h1#users-overview-heading Natours Registered Users
+    main.main 
+        .card-container
+            each user in users
+                .user-card
+                    h2.usernames #{user.name}
+                    p.emails Email Address: #{user.email}
+                    - if(user.role === 'user') 
+                        p.roles Regular #{user.role}
+                    - else
+                        p.roles #{user.role.toUpperCase()}
+                    
+                    - if(user.active === true)
+                        p.active Active User
+                    - else
+                        p.active Inactive User
+                    .user-img
+                        img(src=`img/users/${user.photo}`)
+                    a.btn.btn--green(href=`/users/${user._id}`) See More
+        .page
+            a.page-links.btn.btn--green(href=`/users?page=${page - 1}`) Previous Page
+            a.page-links.btn.btn--green(href=`/users?page=${page + 1}`) Next Page

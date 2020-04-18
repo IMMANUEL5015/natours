@@ -1393,6 +1393,49 @@ label.radio__label{
   height: 50px;
   margin-left: 15px;
 }
+
+/* users */
+.user-card{
+  border: 1px solid black;
+  padding: 10px;
+  text-align: center;
+}
+
+#users-overview-heading{
+  text-align: center;
+  margin-top: 10px; 
+  margin-bottom: 10px;
+}
+
+.emails, .active{
+  color: blue;
+}
+
+.user-img img{
+  width: 70px;
+  border-radius: 50%;
+}
+.user-img{
+  margin-bottom: 5px;
+}
+
+.user-card p{
+  font-size: 1.5em;
+  font-weight: normal;
+}
+
+.page{
+  max-width: 700px;
+  width: 100%;
+  margin: 100px auto 10px auto;
+  text-align:center;
+}
+
+.page-links{
+  margin-right: 20px;
+  margin-bottom: 20px;
+}
+
 /* media queries for responsiveness */
 
 /* User Account Page */
