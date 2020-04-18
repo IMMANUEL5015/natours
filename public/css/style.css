@@ -1436,6 +1436,24 @@ label.radio__label{
   margin-bottom: 20px;
 }
 
+/* User details page */
+.user-details{
+  max-width: 700px;
+  width: 100%;
+  border: 1px solid black;
+  text-align: center;
+  margin: 0 auto;
+  letter-spacing: 2px;
+  box-shadow: 1px 1px 5px 5px #656565;
+  padding: 20px;
+}
+
+.user-details p{
+  font-size: 2em;
+  font-weight: normal;
+  margin-top: 15px;
+}
+
 /* media queries for responsiveness */
 
 /* User Account Page */

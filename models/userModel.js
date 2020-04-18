@@ -1,7 +1,11 @@
+const fs = require('fs');
+const { promisify } = require('util');
 const crypto = require('crypto');
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
+const Booking = require('./bookingModel');
+const Review = require('./reviewModel');
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -93,9 +97,25 @@ userSchema.methods.createPasswordResetToken = function () {
 }
 
 //QUERY MIDDLEWARES
+/*
 userSchema.pre(/^find/, function (next) {
     this.find({ active: { $ne: false } });
     next();
+});
+*/
+
+//Delete all bookings and reviews of a deleted tour
+userSchema.pre(/^findOneAndDelete/, async function (next) {
+    this.user = await this.findOne();
+    next();
+});
+
+userSchema.post(/^findOneAndDelete/, async function () {
+    await Booking.deleteMany({ user: this.user._id });
+    await Review.deleteMany({ user: this.user._id });
+
+    const unlink = promisify(fs.unlink);
+    await unlink(`${__dirname}/../public/img/users/${this.user.photo}`);
 });
 
 module.exports = mongoose.model('User', userSchema);

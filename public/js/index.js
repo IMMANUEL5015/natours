@@ -7,6 +7,7 @@ import { displayMap } from './mapbox';
 import { updateSettings } from './updateSettings';
 import { bookTour } from './stripe';
 import { deleteTour } from './deleteTour';
+import { deleteUser } from './deleteUser';
 
 //Display tour locations on map for only the tour details page
 const mapBox = document.getElementById('map');
@@ -148,10 +149,22 @@ if (resetPasswordForm) {
 const deleteTourBtn = document.getElementById('deleteTour');
 if (deleteTourBtn) {
     deleteTourBtn.addEventListener('click', async (e) => {
-        //using object destructuring
         deleteTourBtn.textContent = 'Processing...';
+        //using object destructuring
         const { tourId } = e.target.dataset;
         await deleteTour(tourId);
         deleteTourBtn.textContent = 'DELETE TOUR';
+    });
+}
+
+//Delete a specific user
+const deleteUserBtn = document.getElementById('deleteUser');
+if (deleteUserBtn) {
+    deleteUserBtn.addEventListener('click', async (e) => {
+        deleteUserBtn.textContent = 'Processing...';
+        //using object destructuring
+        const { userId } = e.target.dataset;
+        await deleteUser(userId);
+        deleteUserBtn.textContent = 'DELETE USER';
     });
 }

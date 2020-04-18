@@ -1,0 +1,20 @@
+extends base
+
+block content
+    main.main
+        .user-details
+            h1 Username: #{foundUser.name}
+            p.emails Email: #{foundUser.email}
+            - if(foundUser.role === 'user') 
+                p.roles Regular #{foundUser.role}
+            - else
+                p.roles #{foundUser.role.toUpperCase()}
+            
+            - if(foundUser.active === true)
+                p.active Active User
+            - else
+                p.active Inactive User
+            .user-img
+                img(src=`/img/users/${foundUser.photo}`)
+            a.page-links.btn.btn--green(href=`/users?page=1`) All Users            
+            button.btn.btn--green#deleteUser(data-user-id=`${foundUser._id}`) Delete User
