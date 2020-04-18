@@ -52,4 +52,9 @@ router.get('/users',
     authController.restrictTo('admin'),
     viewsController.getUsersOverviewPage);
 
+router.route('/users/:id')
+    .get(authController.protect,
+        authController.restrictTo('admin'),
+        viewsController.getDataOfSpecificUser)
+
 module.exports = router;

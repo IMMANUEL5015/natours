@@ -275,3 +275,14 @@ exports.getUsersOverviewPage = catchAsync(async (req, res, next) => {
         page
     });
 });
+
+exports.getDataOfSpecificUser = catchAsync(async (req, res, next) => {
+    const foundUser = await User.findById(req.params.id);
+    if (!foundUser) {
+        return next(new AppError('This user does not exist!', 404));
+    }
+    res.status(200).render('user', {
+        title: foundUser.name,
+        foundUser
+    });
+});
