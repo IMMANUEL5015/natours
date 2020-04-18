@@ -7,6 +7,7 @@ const router = express.Router();
 
 router.get('/forgot-password', viewsController.getForgotPasswordForm);
 router.get('/reset-password/:resetToken', viewsController.getResetPasswordForm);
+
 router.get('/me', authController.protect, viewsController.getAccount);
 router.get('/my-tours', authController.protect, viewsController.getMyTours);
 router.post('/submit-user-data', authController.protect, viewsController.updateUserData);
@@ -38,10 +39,17 @@ router.use(authController.isLoggedIn);
 
 router.get('/', bookingController.createBookingCheckout,
     viewsController.getOverview);
+
 router.get('/tour/:slug',
     viewsController.isAlreadyBooked,
     viewsController.getTour);
+
 router.get('/login', viewsController.getLoginForm);
 router.get('/signup', viewsController.getSignupForm);
+
+router.get('/users',
+    authController.protect,
+    authController.restrictTo('admin'),
+    viewsController.getUsersOverviewPage);
 
 module.exports = router;

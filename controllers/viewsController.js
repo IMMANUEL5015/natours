@@ -264,3 +264,14 @@ exports.updateTour = catchAsync(async (req, res, next) => {
     req.flash('success', 'Tour updated successfully!');
     res.redirect(`/tour/${slug}`);
 });
+
+exports.getUsersOverviewPage = catchAsync(async (req, res, next) => {
+    const page = parseInt(req.query.page) || 1;
+    const skip = (page - 1) * 9;
+    const users = await User.find({}).skip(skip).limit(9);
+    res.status(200).render('usersOverview', {
+        title: 'Natours Registered Users',
+        users,
+        page
+    });
+});
