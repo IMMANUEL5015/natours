@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const Tour = require('./tourModel');
 
 const reviewSchema = mongoose.Schema({
     review: {
@@ -31,17 +30,13 @@ const reviewSchema = mongoose.Schema({
         toObject: { virtuals: true }
     });
 
-reviewSchema.index({tour: 1, user: 1}, {unique: true});
+reviewSchema.index({ tour: 1, user: 1 }, { unique: true });
 
 reviewSchema.pre(/^find/, function (next) {
-    /* this.populate({
-         path: 'user',
-         select: 'name photo'
-     }).populate({
-         path: 'tour',
-         select: 'name'
-     });*/
     this.populate({
+        path: 'tour',
+        select: 'slug id'
+    }).populate({
         path: 'user',
         select: 'name photo'
     });
@@ -62,11 +57,13 @@ reviewSchema.statics.calcAverageRating = async function (tourId) {
         }
     ]);
     if (stats.length > 0) {
+        const Tour = require('./tourModel');
         await Tour.findByIdAndUpdate(tourId, {
             ratingsQuantity: stats[0].nRating,
             ratingsAverage: stats[0].avgRating
         });
     } else {
+        const Tour = require('./tourModel');
         await Tour.findByIdAndUpdate(tourId, {
             ratingsQuantity: 0,
             ratingsAverage: 4.5

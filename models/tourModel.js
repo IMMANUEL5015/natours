@@ -1,11 +1,11 @@
+const Booking = require('./bookingModel');
+const Review = require('./reviewModel');
 const fs = require('fs');
 const { promisify } = require('util');
 const mongoose = require('mongoose');
 //const User = require('./userModel');
 const slugify = require('slugify');
 const validator = require('validator');
-const Booking = require('./bookingModel');
-const Review = require('./reviewModel');
 
 const tourSchema = new mongoose.Schema({
     name: {
@@ -183,7 +183,7 @@ tourSchema.post(/^find/, function (docs, next) {
 tourSchema.pre('aggregate', function (next) {
     if (!this.pipeline()[0].$geoNear) {
         this.pipeline().unshift({ $match: { secretTour: false } });
-        next();
+        return next();
     }
     next();
 });

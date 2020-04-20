@@ -1,0 +1,23 @@
+extends base
+
+block content
+    main.main
+        .reviews__card#review-details
+            .reviews__avatar
+                img.reviews__avatar-img(src=`/img/users/${review.user.photo}`, alt=`${review.user.name}`)
+                h6.reviews__user= review.user.name
+            p.reviews__text= review.review
+            p.reviews__text= moment(review.createdAt).fromNow() 
+            .reviews__rating
+                each star in [1,2,3,4,5]
+                    svg.reviews__star(class=`reviews__star--${review.rating >= star ? 'active' : 'inactive'}`)
+                        use(xlink:href='/img/icons.svg#icon-star')
+            .see-review-details
+                a.btn.btn--green(href=`/tour/${review.tour.slug}`) Go Back
+            - if(user && (user.id === review.user.id))
+                .see-review-details
+                    button#edit-review.btn.btn--green(data-review-link=`${review.tour.id},${review._id}`) Edit
+                    button#delete-review.btn.btn--green(data-review-link=`${review.tour.id},${review._id}`) Delete
+            - if(user && (user.role === 'admin'))
+                .see-review-details
+                    button#delete-review.btn.btn--green(data-review-link=`${review.tour.id},${review._id}`) Delete

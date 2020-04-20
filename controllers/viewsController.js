@@ -3,6 +3,7 @@ const { promisify } = require('util');
 const Tour = require('../models/tourModel');
 const User = require('../models/userModel');
 const Booking = require('../models/bookingModel');
+const Review = require('../models/reviewModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const slugify = require('slugify');
@@ -284,5 +285,14 @@ exports.getDataOfSpecificUser = catchAsync(async (req, res, next) => {
     res.status(200).render('user', {
         title: foundUser.name,
         foundUser
+    });
+});
+
+exports.getReviewDetails = catchAsync(async (req, res, next) => {
+    const review = await Review.findById(req.params.id);
+    if (!review) return next(new AppError('This review does not exist!', 404));
+    res.status(200).render('review', {
+        title: 'Review Details',
+        review
     });
 });
