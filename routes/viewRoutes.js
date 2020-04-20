@@ -57,4 +57,5 @@ router.route('/users/:id')
         authController.restrictTo('admin'),
         viewsController.getDataOfSpecificUser)
 
+router.get('/reviews/:id', viewsController.getReviewDetails);
 module.exports = router;

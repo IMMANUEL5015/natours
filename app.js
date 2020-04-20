@@ -101,6 +101,9 @@ app.use('/api/v1/users', userRouter);
 app.use('/api/v1/bookings', bookingRouter);
 app.use(viewRouter);
 
+//Use Moment
+app.locals.moment = require('moment');
+
 //Handling Undefined Routes
 app.all('*', (req, res, next) => {
     next(new AppError(`Can't find ${req.originalUrl} on this server.`, 404));

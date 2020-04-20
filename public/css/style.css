@@ -1454,6 +1454,20 @@ label.radio__label{
   margin-top: 15px;
 }
 
+/* Reviews */
+.see-review-details{
+  margin-top: 15px;
+}
+
+#review-details{
+  margin: 0px auto 0px auto;
+  max-width: 60rem;
+  width: 100%;
+}
+
+.see-review-details button:nth-of-type(2){
+  margin-left: 10px;
+}
 /* media queries for responsiveness */
 
 /* User Account Page */
@@ -1526,6 +1540,11 @@ label.radio__label{
 }
 
 @media screen and (max-width: 550px){
+  /* Reviews */
+  .see-review-details button{
+    font-size: 12px;
+  }
+
   /* User account page */
   .user-view__form-container{
     padding: 0 2rem;
@@ -1662,5 +1681,9 @@ label.radio__label{
  /* buttons for updating and deleting tour */
  #deleteTour, #updateTour{
   margin-top: 15px;
+ }
+
+ #edit-review, #delete-review{
+   padding: 1.2rem 2rem;
  }
 }
