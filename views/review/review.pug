@@ -1,4 +1,4 @@
-extends base
+extends layout/base
 
 block content
     main.main
@@ -13,11 +13,8 @@ block content
                     svg.reviews__star(class=`reviews__star--${review.rating >= star ? 'active' : 'inactive'}`)
                         use(xlink:href='/img/icons.svg#icon-star')
             .see-review-details
-                a.btn.btn--green(href=`/tour/${review.tour.slug}`) Go Back
-            - if(user && (user.id === review.user.id))
+                a#go-back-link(href=`/tour/${review.tour.slug}`) Go Back
+            - if(user && (user.id === review.user.id) || user && (user.role === 'admin'))
                 .see-review-details
-                    button#edit-review.btn.btn--green(data-review-link=`${review.tour.id},${review._id}`) Edit
-                    button#delete-review.btn.btn--green(data-review-link=`${review.tour.id},${review._id}`) Delete
-            - if(user && (user.role === 'admin'))
-                .see-review-details
-                    button#delete-review.btn.btn--green(data-review-link=`${review.tour.id},${review._id}`) Delete
+                    a#edit-review.btn.btn--green(href=`/tour/${review.tour.slug}/reviews/${review._id}/review-update-form`) Edit
+                    button#delete-review.btn.btn--green(data-delete-link=`${review.tour.id},${review._id},${review.tour.slug}`) Delete

@@ -187,7 +187,7 @@ body {
 .btn:link,
 .btn:visited {
   font-size: 1.6rem;
-  padding: 1.4rem 3rem;
+  padding: 1rem 2rem;
   border-radius: 10rem;
   text-transform: uppercase;
   display: inline-block;
@@ -1455,6 +1455,9 @@ label.radio__label{
 }
 
 /* Reviews */
+#go-back-link{
+  font-size: 16px;
+}
 .see-review-details{
   margin-top: 15px;
 }
@@ -1465,9 +1468,15 @@ label.radio__label{
   width: 100%;
 }
 
-.see-review-details button:nth-of-type(2){
+.see-review-details button{
   margin-left: 10px;
 }
+
+#review-form-link{
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
 /* media queries for responsiveness */
 
 /* User Account Page */
@@ -1541,7 +1550,7 @@ label.radio__label{
 
 @media screen and (max-width: 550px){
   /* Reviews */
-  .see-review-details button{
+  .see-review-details button, .see-review-details #edit-review{
     font-size: 12px;
   }
 

@@ -9,71 +9,124 @@ const AppError = require('../utils/appError');
 const slugify = require('slugify');
 
 exports.getOverview = catchAsync(async (req, res, next) => {
-    //1. Get all the Tours data from the collection
     const tours = await Tour.find({});
-    //2. Build Template with all the Tours data
 
-    //3. Render the template
-
-    res.status(200).render('overview', {
+    res.status(200).render('tour/overview', {
         title: 'All Tours',
         tours
     });
 });
 
 exports.getTour = catchAsync(async (req, res, next) => {
-    //1. Get the data of the tour including the tour guides and reviews
-    const tour = await Tour.findOne({ slug: req.params.slug }).populate({
+    const retrievedTour = await Tour.findOne({ slug: req.params.slug }).populate({
         path: 'reviews',
         fields: 'review rating user'
     });
 
-    if (!tour) {
+    if (!retrievedTour) {
         return next(new AppError('There is no tour with that name.', 404));
     }
 
-    //2. Build the template with the tour data
-    //3. Render the template
-    res.status(200).render('tour', {
+    req.retrievedTour = retrievedTour;
+    next();
+});
+
+exports.getTourReviewsUsersIds = (req, res, next) => {
+    const tour = req.retrievedTour;
+    const tourReviews = tour.reviews;
+    let reviewsUserIds = [];
+    let userHasReviewedTour = false;
+    for (var i = 0; i < tourReviews.length; i++) {
+        reviewsUserIds.push(tourReviews[i].user._id);
+    }
+
+    //3. Check if the currently logged in user has reviewed this tour
+    for (var i = 0; i < reviewsUserIds.length; i++) {
+        if (req.user && (reviewsUserIds[i].equals(req.user._id))) {
+            userHasReviewedTour = true;
+            i = reviewsUserIds.length;
+            req.user.userHasReviewedTour = userHasReviewedTour;
+        }
+    }
+    res.locals.userHasReviewedTour = userHasReviewedTour;
+    next();
+}
+
+exports.errorIfUserHasReviewedTour = (req, res, next) => {
+    if (req.user.userHasReviewedTour) return next(new AppError('You cannot review a tour twice.', 403));
+
+    next();
+}
+
+exports.renderTourDetailsPage = (req, res, next) => {
+    const tour = req.retrievedTour;
+    res.status(200).render('tour/tour', {
         title: `${tour.name} Tour`,
         tour
     });
-});
+}
 
 exports.getSignupForm = (req, res) => {
-    res.status(200).render('signup', {
+    res.status(200).render('user/signup', {
         title: 'Create your account',
     });
 }
 
 exports.getLoginForm = (req, res) => {
-    res.status(200).render('login', {
+    res.status(200).render('user/login', {
         title: 'Log into your account',
     });
 }
 
 exports.getAccount = (req, res) => {
-    res.status(200).render('account', {
+    res.status(200).render('user/account', {
         title: 'Your account page',
     });
 }
 
 exports.getForgotPasswordForm = (req, res) => {
-    res.status(200).render('forgotPassword', {
+    res.status(200).render('user/forgotPassword', {
         title: 'Forgot Password Page',
     });
 }
 
 exports.getResetPasswordForm = (req, res) => {
-    res.status(200).render('resetPassword', {
+    res.status(200).render('user/resetPassword', {
         title: 'Reset Your Password ',
         resetToken: `${req.params.resetToken}`
     });
 }
 
 exports.getCreateTourForm = (req, res) => {
-    res.status(200).render('createNewTour', {
+    res.status(200).render('tour/createNewTour', {
         title: 'Create New Tour',
+    });
+}
+
+exports.getReviewForm = (req, res, next) => {
+    const tour = req.retrievedTour;
+    res.status(200).render('review/reviewForm', {
+        title: `Review ${tour.name}`,
+        tour
+    });
+}
+
+exports.isReviewOwner = catchAsync(async (req, res, next) => {
+    const review = await Review.findById(req.params.id);
+    if (!review) return next(new AppError('This review does not exist'), 404);
+
+    if (req.user.id === review.user.id || req.user.role === 'admin') {
+        req.review = review;
+        return next()
+    }
+    return next(new AppError('You can neither update nor delete a review you did not create.', 403));
+});
+
+exports.getReviewUpdateForm = (req, res, next) => {
+    const review = req.review;
+    res.status(200).render('review/reviewUpdateForm', {
+        title: `Update Review`,
+        review
     });
 }
 
@@ -100,7 +153,7 @@ exports.getMyTours = catchAsync(async (req, res, next) => {
     const tourIds = bookings.map(el => el.tour);
     const tours = await Tour.find({ _id: { $in: tourIds } });
 
-    res.status(200).render('overview', {
+    res.status(200).render('tour/overview', {
         title: 'My Tours',
         tours
     });
@@ -115,10 +168,17 @@ exports.isAlreadyBooked = catchAsync(async (req, res, next) => {
         //3. If a booking already exists for the tour, return an error
         if (tourSlugs.includes(req.params.slug)) {
             res.locals.user.hasAlreadyBookedTour = true;
+            req.user.hasAlreadyBookedTour = true;
         }
     }
     next();
 });
+
+exports.errorIfNotBooked = (req, res, next) => {
+    if (req.user.hasAlreadyBookedTour) return next();
+    return next(new AppError('You cannot review a tour that you have not booked.', 403));
+}
+
 exports.constructFields = (req, res, next) => {
     //startDates
     req.body.startDates = [
@@ -210,7 +270,7 @@ exports.createNewTour = catchAsync(async (req, res, next) => {
 
 exports.getUpdateTourForm = catchAsync(async (req, res, next) => {
     const tour = await Tour.findOne({ slug: req.params.slug });
-    res.status(200).render('updateTourForm', {
+    res.status(200).render('tour/updateTourForm', {
         title: 'Update Tour',
         tour
     });
@@ -270,7 +330,7 @@ exports.getUsersOverviewPage = catchAsync(async (req, res, next) => {
     const page = parseInt(req.query.page) || 1;
     const skip = (page - 1) * 9;
     const users = await User.find({}).skip(skip).limit(9);
-    res.status(200).render('usersOverview', {
+    res.status(200).render('user/usersOverview', {
         title: 'Natours Registered Users',
         users,
         page
@@ -282,7 +342,7 @@ exports.getDataOfSpecificUser = catchAsync(async (req, res, next) => {
     if (!foundUser) {
         return next(new AppError('This user does not exist!', 404));
     }
-    res.status(200).render('user', {
+    res.status(200).render('user/user', {
         title: foundUser.name,
         foundUser
     });
@@ -291,7 +351,7 @@ exports.getDataOfSpecificUser = catchAsync(async (req, res, next) => {
 exports.getReviewDetails = catchAsync(async (req, res, next) => {
     const review = await Review.findById(req.params.id);
     if (!review) return next(new AppError('This review does not exist!', 404));
-    res.status(200).render('review', {
+    res.status(200).render('review/review', {
         title: 'Review Details',
         review
     });

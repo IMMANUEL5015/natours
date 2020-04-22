@@ -42,7 +42,9 @@ router.get('/', bookingController.createBookingCheckout,
 
 router.get('/tour/:slug',
     viewsController.isAlreadyBooked,
-    viewsController.getTour);
+    viewsController.getTour,
+    viewsController.getTourReviewsUsersIds,
+    viewsController.renderTourDetailsPage);
 
 router.get('/login', viewsController.getLoginForm);
 router.get('/signup', viewsController.getSignupForm);
@@ -58,4 +60,20 @@ router.route('/users/:id')
         viewsController.getDataOfSpecificUser)
 
 router.get('/reviews/:id', viewsController.getReviewDetails);
+
+router.get('/tour/:slug/review-form',
+    authController.protect,
+    authController.restrictTo('user'),
+    viewsController.isAlreadyBooked,
+    viewsController.errorIfNotBooked,
+    viewsController.getTour,
+    viewsController.getTourReviewsUsersIds,
+    viewsController.errorIfUserHasReviewedTour,
+    viewsController.getReviewForm);
+
+router.get('/tour/:slug/reviews/:id/review-update-form',
+    authController.protect,
+    authController.restrictTo('user', 'admin'),
+    viewsController.isReviewOwner,
+    viewsController.getReviewUpdateForm);
 module.exports = router;

@@ -1,13 +1,9 @@
 import '@babel/polyfill';
-import { login, logout } from './login';
-import { forgotPassword } from './forgotPassword';
-import { resetPassword } from './resetPassword';
-import { signup } from './signup';
-import { displayMap } from './mapbox';
-import { updateSettings } from './updateSettings';
-import { bookTour } from './stripe';
-import { deleteTour } from './deleteTour';
-import { deleteUser } from './deleteUser';
+import { login, logout, forgotPassword, resetPassword, signup, updateSettings, deleteUser } from './user';
+import { bookTour, displayMap, deleteTour } from './tour';
+import { createReview, updateReview, deleteReview } from './review';
+
+//Tours
 
 //Display tour locations on map for only the tour details page
 const mapBox = document.getElementById('map');
@@ -15,6 +11,31 @@ if (mapBox) {
     const locations = JSON.parse(mapBox.dataset.locations);
     displayMap(locations);
 }
+
+//Book Tour
+const bookTourBtn = document.getElementById('book-tour');
+if (bookTourBtn) {
+    bookTourBtn.addEventListener('click', e => {
+        e.target.textContent = 'Processing...';
+        //using object destructuring
+        const { tourId } = e.target.dataset;
+        bookTour(tourId);
+    });
+}
+
+//Delete a tour
+const deleteTourBtn = document.getElementById('deleteTour');
+if (deleteTourBtn) {
+    deleteTourBtn.addEventListener('click', async (e) => {
+        deleteTourBtn.textContent = 'Processing...';
+        //using object destructuring
+        const { tourId } = e.target.dataset;
+        await deleteTour(tourId);
+        deleteTourBtn.textContent = 'DELETE TOUR';
+    });
+}
+
+//Users
 
 //Login user on only the login page
 const loginForm = document.querySelector('.form--login');
@@ -79,18 +100,6 @@ if (updateUserPassword) {
     });
 }
 
-
-//Book Tour
-const bookTourBtn = document.getElementById('book-tour');
-if (bookTourBtn) {
-    bookTourBtn.addEventListener('click', e => {
-        e.target.textContent = 'Processing...';
-        //using object destructuring
-        const { tourId } = e.target.dataset;
-        bookTour(tourId);
-    });
-}
-
 //Toggle navbar on small screens
 const toggler = document.getElementById('nav__items--toggle');
 if (toggler) {
@@ -145,17 +154,7 @@ if (resetPasswordForm) {
     });
 }
 
-//Delete a tour
-const deleteTourBtn = document.getElementById('deleteTour');
-if (deleteTourBtn) {
-    deleteTourBtn.addEventListener('click', async (e) => {
-        deleteTourBtn.textContent = 'Processing...';
-        //using object destructuring
-        const { tourId } = e.target.dataset;
-        await deleteTour(tourId);
-        deleteTourBtn.textContent = 'DELETE TOUR';
-    });
-}
+
 
 //Delete a specific user
 const deleteUserBtn = document.getElementById('deleteUser');
@@ -166,5 +165,63 @@ if (deleteUserBtn) {
         const { userId } = e.target.dataset;
         await deleteUser(userId);
         deleteUserBtn.textContent = 'DELETE USER';
+    });
+}
+
+//Reviews
+
+//Create Review
+const createReviewForm = document.querySelector('.form--review');
+if (createReviewForm) {
+    createReviewForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        document.getElementById('create-review-button').textContent = 'Creating Review...';
+        const review = document.getElementById('review').value;
+        const rating = document.getElementById('rating').value;
+
+        const submitLink = document.getElementById('create-review-button').dataset.submitLink;
+        const submitLinkArr = submitLink.split(',');
+        const tour = submitLinkArr[0];
+        const slug = submitLinkArr[1];
+
+        await createReview(review, rating, tour, slug);
+        document.getElementById('create-review-button').textContent = 'SUBMIT';
+    });
+}
+
+//Update Review
+const updateReviewForm = document.querySelector('.form--review-update');
+if (updateReviewForm) {
+    updateReviewForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        document.getElementById('update-review-button').textContent = 'Updating...';
+        const review = document.getElementById('review').value;
+        const rating = document.getElementById('rating').value;
+
+        const updateLink = document.getElementById('update-review-button').dataset.updateLink;
+        const updateLinkArr = updateLink.split(',');
+        const tour = updateLinkArr[0];
+        const reviewId = updateLinkArr[1];
+        const slug = updateLinkArr[2];
+
+        await updateReview(review, rating, tour, reviewId, slug);
+        document.getElementById('update-review-button').textContent = 'UPDATE';
+    });
+}
+
+//Delete Review
+const deleteReviewBtn = document.querySelector('#delete-review');
+if (deleteReviewBtn) {
+    deleteReviewBtn.addEventListener('click', async (e) => {
+        deleteReviewBtn.textContent = 'Deleting...';
+
+        const deleteLink = deleteReviewBtn.dataset.deleteLink;
+        const deleteLinkArr = deleteLink.split(',');
+        const tour = deleteLinkArr[0];
+        const reviewId = deleteLinkArr[1];
+        const slug = deleteLinkArr[2];
+
+        await deleteReview(tour, reviewId, slug);
+        deleteReviewBtn.textContent = 'DELETE';
     });
 }

@@ -1,0 +1,15 @@
+extends layout/base
+
+block content
+    main.main
+        .signup-form#review-update-form
+            h2.heading-secondary.ma-bt-lg Update your review
+            form.form.form--review-update
+                .form__group
+                    label.form__label(for='review') Update what you have to say about this tour?
+                    input#review.form__input(type='text', required value=`${review.review}`)
+                .form__group.ma-bt-md
+                    label.form__label(for='rating') Update your rating
+                    input#rating.form__input(type='number', required, step='0.1' value=`${review.rating}`)
+                .form__group
+                    button.btn.btn--green#update-review-button(data-update-link=`${review.tour.id},${review.id},${review.tour.slug}`) Update

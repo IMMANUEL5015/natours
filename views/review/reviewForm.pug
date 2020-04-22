@@ -1,0 +1,15 @@
+extends layout/base
+
+block content
+    main.main
+        .signup-form#review-creation-form
+            h2.heading-secondary.ma-bt-lg Create your review
+            form.form.form--review
+                .form__group
+                    label.form__label(for='review') What do you have to say about this tour?
+                    input#review.form__input(type='text', required)
+                .form__group.ma-bt-md
+                    label.form__label(for='rating') Enter your rating
+                    input#rating.form__input(type='number', placeholder='4.5', required, step='0.1')
+                .form__group
+                    button.btn.btn--green#create-review-button(data-submit-link=`${tour.id},${tour.slug}`) Submit

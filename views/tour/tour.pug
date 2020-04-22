@@ -1,4 +1,4 @@
-extends base
+extends layout/base
 
 block append head
     script(src='https://api.mapbox.com/mapbox-gl-js/v1.8.1/mapbox-gl.js')
@@ -75,6 +75,8 @@ block content
             - const paragraphs = tour.description.split('\n');
             each p in paragraphs
                 p.description__text= p
+            - if (user && (user.role === 'user') && (user.hasAlreadyBookedTour) && (!userHasReviewedTour))
+                a.btn.btn--green.btn--small#review-form-link(href=`/tour/${tour.slug}/review-form`) Create Review
             
     section.section-pictures
         each img, index in tour.images

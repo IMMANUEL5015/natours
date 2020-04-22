@@ -1,0 +1,36 @@
+//- We have two headers: The first is displayed on wider screens sizes and the second, on smaller screens
+header.header
+    nav.nav.nav--tours
+        a.nav__el(href='/') All tours
+        form.nav__search
+            button.nav__search-btn
+                svg
+                    use(xlink:href='/img/icons.svg#icon-search')
+            input(type='text' placeholder='Search tours' class='nav__search-input')
+    .header__logo
+        img(src='/img/logo-white.png' alt='Natours logo')
+    nav.nav.nav--user
+        button#nav__items--toggle
+            i(class="fa fa-bars" aria-hidden="true")
+        if user
+            a.nav__el.nav__el--logout.nav--user__element Logout
+            a.nav__el.nav--user__element(href='/me')
+                img.nav__user-img(src=`/img/users/${user.photo}` alt=`${user.name}`)
+                span= user.name.split(' ')[0]
+        else
+            a.nav__el.nav--user__element(href='/login') Log in
+            a.nav__el.nav__el--cta.nav--user__element(href='/signup') Sign up
+div.header#invisible--header
+    form.nav__search
+        button.nav__search-btn
+            svg
+                use(xlink:href='/img/icons.svg#icon-search')
+        input(type='text' placeholder='Search tours' class='nav__search-input')
+    if user
+        a.nav__el.nav__el--logout.nav--user__el#logout Logout
+        a.nav__el.nav--user__el(href='/me')
+            img.nav__user-img(src=`/img/users/${user.photo}` alt=`${user.name}`)
+            span= user.name.split(' ')[0]
+    else
+        a.nav__el.nav--user__el(href='/login') Log in
+        a.nav__el.nav--user__el(href='/signup') Sign up
