@@ -44,6 +44,7 @@ router.get('/tour/:slug',
     viewsController.isAlreadyBooked,
     viewsController.getTour,
     viewsController.getTourReviewsUsersIds,
+    tourController.isAlreadyAFavorite,
     viewsController.renderTourDetailsPage);
 
 router.get('/login', viewsController.getLoginForm);
@@ -76,4 +77,8 @@ router.get('/tour/:slug/reviews/:id/review-update-form',
     authController.restrictTo('user', 'admin'),
     viewsController.isReviewOwner,
     viewsController.getReviewUpdateForm);
+
+router.get('/my-favorite-tours', authController.protect,
+    authController.restrictTo('user'),
+    viewsController.getMyFavoriteTours);
 module.exports = router;

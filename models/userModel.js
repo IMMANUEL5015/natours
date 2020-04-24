@@ -52,7 +52,11 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: true,
         //select: false
-    }
+    },
+    favoriteTours: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Tour'
+    }]
 });
 
 //DOCUMENT MIDDLEWARES
@@ -97,12 +101,13 @@ userSchema.methods.createPasswordResetToken = function () {
 }
 
 //QUERY MIDDLEWARES
-/*
+
 userSchema.pre(/^find/, function (next) {
-    this.find({ active: { $ne: false } });
+    //this.find({ active: { $ne: false } });
+    this.populate('favoriteTours');
     next();
 });
-*/
+
 
 //Delete all bookings and reviews of a deleted tour
 userSchema.pre(/^findOneAndDelete/, async function (next) {

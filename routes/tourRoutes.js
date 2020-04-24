@@ -1,5 +1,6 @@
 const express = require('express');
 const tourController = require('../controllers/tourController');
+const viewsController = require('../controllers/viewsController');
 const authController = require('../controllers/authController');
 const reviewRoutes = require('./reviewRoutes');
 const router = express.Router();
@@ -35,5 +36,20 @@ router.route('/:id')
     .delete(authController.protect,
         authController.restrictTo('admin', 'lead-guide'),
         tourController.deleteTour);
+
+router.patch('/:id/add-to-favorites',
+    authController.protect,
+    authController.restrictTo('user'),
+    viewsController.isAlreadyBooked,
+    viewsController.errorIfNotBooked,
+    tourController.isAlreadyAFavorite,
+    tourController.addTourToUserFavorites);
+
+router.delete('/:id/remove-from-favorites',
+    authController.protect,
+    authController.restrictTo('user'),
+    viewsController.isAlreadyBooked,
+    viewsController.errorIfNotBooked,
+    tourController.removeTourFromUserFavorites);
 
 module.exports = router;

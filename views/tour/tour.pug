@@ -77,6 +77,12 @@ block content
                 p.description__text= p
             - if (user && (user.role === 'user') && (user.hasAlreadyBookedTour) && (!userHasReviewedTour))
                 a.btn.btn--green.btn--small#review-form-link(href=`/tour/${tour.slug}/review-form`) Create Review
+            - if(user && user.role === 'user' && user.hasAlreadyBookedTour && (!user.isAlreadyAFavorite))
+                button.btn.btn--green.btn--small#likeTour(data-tour-id=`${tour.id}`) Add To Favorites
+            - if(user && user.role === 'user' && user.hasAlreadyBookedTour && (user.isAlreadyAFavorite))
+                p#favoriteTourParagraph= `${tour.name} is one of your favorite tours!`
+                button.btn.btn--green.btn--small#dislikeTour(data-tour-id=`${tour.id}`) Remove From Favorites
+
             
     section.section-pictures
         each img, index in tour.images

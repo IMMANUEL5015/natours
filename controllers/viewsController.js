@@ -163,12 +163,31 @@ exports.isAlreadyBooked = catchAsync(async (req, res, next) => {
     if (req.user) {
         //1. Get all the users current bookings
         const bookings = await Booking.find({ user: req.user.id });
-        //2. Check to see if one of the bookings exist for the tour about to be booked
-        const tourSlugs = bookings.map(el => slugify(el.tour.name.toLowerCase()));
-        //3. If a booking already exists for the tour, return an error
-        if (tourSlugs.includes(req.params.slug)) {
-            res.locals.user.hasAlreadyBookedTour = true;
-            req.user.hasAlreadyBookedTour = true;
+
+        if (req.params.slug) {
+            //2. Check to see if one of the bookings exist for the tour about to be booked
+            const tourSlugs = bookings.map(el => slugify(el.tour.name.toLowerCase()));
+            //3. If a booking already exists for the tour, return an error
+            if (tourSlugs.includes(req.params.slug)) {
+                res.locals.user.hasAlreadyBookedTour = true;
+                req.user.hasAlreadyBookedTour = true;
+            } else {
+                res.locals.user.hasAlreadyBookedTour = false;
+                req.user.hasAlreadyBookedTour = false;
+            }
+        }
+
+        if (req.params.id) {
+            //2. Check to see if one of the bookings exist for the tour about to be booked
+            const tourIds = bookings.map(el => el.tour.id);
+            //3. If a booking already exists for the tour, return an error
+            if (tourIds.includes(req.params.id)) {
+                res.locals.user.hasAlreadyBookedTour = true;
+                req.user.hasAlreadyBookedTour = true;
+            } else {
+                res.locals.user.hasAlreadyBookedTour = false;
+                req.user.hasAlreadyBookedTour = false;
+            }
         }
     }
     next();
@@ -176,7 +195,7 @@ exports.isAlreadyBooked = catchAsync(async (req, res, next) => {
 
 exports.errorIfNotBooked = (req, res, next) => {
     if (req.user.hasAlreadyBookedTour) return next();
-    return next(new AppError('You cannot review a tour that you have not booked.', 403));
+    return next(new AppError('You must book this tour first.', 403));
 }
 
 exports.constructFields = (req, res, next) => {
@@ -356,3 +375,10 @@ exports.getReviewDetails = catchAsync(async (req, res, next) => {
         review
     });
 });
+
+exports.getMyFavoriteTours = (req, res, next) => {
+    res.render('tour/overview', {
+        title: 'Favorite Tours',
+        tours: req.user.favoriteTours
+    });
+}

@@ -2,6 +2,7 @@ import '@babel/polyfill';
 import { login, logout, forgotPassword, resetPassword, signup, updateSettings, deleteUser } from './user';
 import { bookTour, displayMap, deleteTour } from './tour';
 import { createReview, updateReview, deleteReview } from './review';
+import { addToFavorites, removeFromFavorites } from './favorites';
 
 //Tours
 
@@ -40,11 +41,13 @@ if (deleteTourBtn) {
 //Login user on only the login page
 const loginForm = document.querySelector('.form--login');
 if (loginForm) {
-    loginForm.addEventListener('submit', e => {
+    loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
+        document.getElementById('login').textContent = 'Logging in...';
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
-        login(email, password);
+        await login(email, password);
+        document.getElementById('login').textContent = 'Login';
     });
 }
 
@@ -57,13 +60,15 @@ if (logoutBtn) {
 //Signup user on only the signup page
 const signupForm = document.querySelector('.form--signup');
 if (signupForm) {
-    signupForm.addEventListener('submit', e => {
+    signupForm.addEventListener('submit', async (e) => {
         e.preventDefault();
+        document.getElementById('signup').textContent = 'Signing up...';
         const email = document.getElementById('email').value;
         const name = document.getElementById('name').value;
         const password = document.getElementById('password').value;
         const passwordConfirm = document.getElementById('passwordConfirm').value;
-        signup(email, name, password, passwordConfirm);
+        await signup(email, name, password, passwordConfirm);
+        document.getElementById('signup').textContent = 'Register';
     });
 }
 
@@ -223,5 +228,29 @@ if (deleteReviewBtn) {
 
         await deleteReview(tour, reviewId, slug);
         deleteReviewBtn.textContent = 'DELETE';
+    });
+}
+
+//Favorites
+
+//Add to favorites
+const likeTourBtn = document.getElementById('likeTour');
+if (likeTourBtn) {
+    likeTourBtn.addEventListener('click', async (e) => {
+        likeTourBtn.textContent = 'Adding To Favorites...';
+        const { tourId } = likeTourBtn.dataset;
+        await addToFavorites(tourId);
+        likeTourBtn.textContent = 'Add To Favorites';
+    });
+}
+
+//Remove from favorites
+const dislikeTourBtn = document.getElementById('dislikeTour');
+if (dislikeTourBtn) {
+    dislikeTourBtn.addEventListener('click', async (e) => {
+        dislikeTourBtn.textContent = 'Removing from favorites...';
+        const { tourId } = dislikeTourBtn.dataset;
+        await removeFromFavorites(tourId);
+        dislikeTourBtn.textContent = 'Remove From Favorites';
     });
 }

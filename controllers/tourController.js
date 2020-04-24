@@ -1,6 +1,8 @@
 const multer = require('multer');
 const sharp = require('sharp');
 const Tour = require('../models/tourModel');
+//const Booking = require('../models/bookingModel');
+//const User = require('../models/userModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const factory = require('./handlerFactory');
@@ -212,5 +214,56 @@ exports.getMonthlyPlan = catchAsync(async (req, res, next) => {
         data: {
             plan
         }
+    });
+});
+
+exports.isAlreadyAFavorite = (req, res, next) => {
+    if (req.user) {
+        if (req.params.id) {
+            if (req.user.favoriteTours.includes(req.params.id)) {
+                return next(new AppError('This tour is already one of your favorite tours.', 403));
+            }
+        }
+
+        if (req.params.slug) {
+            const favouriteTours = req.user.favoriteTours;
+            const favoriteToursSlugs = favouriteTours.map(el => el.slug);
+            if (favoriteToursSlugs.includes(req.params.slug)) {
+                res.locals.user.isAlreadyAFavorite = true;
+            }
+        }
+    }
+
+    next();
+}
+
+exports.addTourToUserFavorites = catchAsync(async (req, res, next) => {
+    const user = req.user;
+    user.favoriteTours.push(req.params.id);
+    await user.save({ validateBeforeSave: false });
+    res.status(200).json({
+        status: 'success',
+        message: 'This tour is now one of your favorite tours.'
+    });
+});
+
+exports.removeTourFromUserFavorites = catchAsync(async (req, res, next) => {
+    let user = req.user;
+    for (var i = 0; i < user.favoriteTours.length; i++) {
+        if (user.favoriteTours[i].id === req.params.id) {
+            user.favoriteTours.splice(i, 1);
+            await user.save({ validateBeforeSave: false });
+            i = user.favoriteTours.length;
+
+            return res.status(200).json({
+                status: 'success',
+                message: 'This tour is no longer one of your favorite tours.'
+            });
+        }
+    }
+
+    res.status(400).json({
+        status: 'fail',
+        message: 'This tour is not among your favorite tours.'
     });
 });
