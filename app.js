@@ -25,6 +25,9 @@ app.set('views', path.join(__dirname, 'views'));
 //Set Security HTTP Headers
 app.use(helmet());
 
+//Trust proxys
+app.enable('trust proxy');
+
 //Log endpoints of each request to the console
 if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
@@ -82,14 +85,14 @@ app.use(flash());
 app.use(require('express-session')({
     resave: false,
     saveUninitialized: false,
-    secret: 'I am a son of earth and starry heaven' 
+    secret: 'I am a son of earth and starry heaven'
 }));
 
 //Compress all our text responses
 app.use(compression());
 
 //Pass variables to templates using middleware
-app.use(function(req, res, next){
+app.use(function (req, res, next) {
     res.locals.error = req.flash('error');
     res.locals.success = req.flash('success');
     next();
