@@ -10,6 +10,7 @@ const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
 const flash = require('connect-flash');
 const compression = require('compression');
+const cors = require('cors');
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const viewRouter = require('./routes/viewRoutes');
@@ -21,6 +22,16 @@ const app = express();
 //MIDDLEWARES
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
+
+//Implement CORS
+app.use(cors());
+/*
+app.use(cors({
+    'origin': 'https://www.natours.com'
+}));
+*/
+app.options('*', cors());
+//app.options('/api/v1/tours/:id', cors());
 
 //Set Security HTTP Headers
 app.use(helmet());
@@ -99,7 +110,7 @@ app.use(function (req, res, next) {
 });
 
 //ROUTES
-app.use('/api/v1/tours', tourRouter);
+app.use('/api/v1/tours', /*cors(),*/ tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/bookings', bookingRouter);
 app.use(viewRouter);
