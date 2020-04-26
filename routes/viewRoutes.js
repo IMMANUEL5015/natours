@@ -2,8 +2,10 @@ const express = require('express');
 const viewsController = require('../controllers/viewsController');
 const tourController = require('../controllers/tourController');
 const authController = require('../controllers/authController');
-const bookingController = require('../controllers/bookingController');
+//const bookingController = require('../controllers/bookingController');
 const router = express.Router();
+
+router.use(viewsController.alerts);
 
 router.get('/forgot-password', viewsController.getForgotPasswordForm);
 router.get('/reset-password/:resetToken', viewsController.getResetPasswordForm);

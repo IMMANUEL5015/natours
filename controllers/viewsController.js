@@ -382,3 +382,11 @@ exports.getMyFavoriteTours = (req, res, next) => {
         tours: req.user.favoriteTours
     });
 }
+
+exports.alerts = (req, res, next) => {
+    const { alert } = req.query;
+    if (alert === 'booking') {
+        res.locals.alert = "Your booking was successful. Please check your email for confirmation. If your booking does not show up right away, please come back later.";
+    }
+    next();
+}

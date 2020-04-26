@@ -3,6 +3,7 @@ import { login, logout, forgotPassword, resetPassword, signup, updateSettings, d
 import { bookTour, displayMap, deleteTour } from './tour';
 import { createReview, updateReview, deleteReview } from './review';
 import { addToFavorites, removeFromFavorites } from './favorites';
+import { showAlert } from './alerts';
 
 //Tours
 
@@ -254,3 +255,7 @@ if (dislikeTourBtn) {
         dislikeTourBtn.textContent = 'Remove From Favorites';
     });
 }
+
+//Display Alert Message
+const alertMessage = document.querySelector('body').dataset.alert;
+if (alertMessage) showAlert('success', alertMessage, 20);
