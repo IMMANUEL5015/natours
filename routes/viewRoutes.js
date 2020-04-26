@@ -37,7 +37,8 @@ router.route('/update-tour/:slug')
 
 router.use(authController.isLoggedIn);
 
-router.get('/', bookingController.createBookingCheckout,
+router.get('/',
+    //bookingController.createBookingCheckout,
     viewsController.getOverview);
 
 router.get('/tour/:slug',
