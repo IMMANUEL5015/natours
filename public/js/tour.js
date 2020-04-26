@@ -4,6 +4,7 @@ import { showAlert } from './alerts';
 //1. Book Tour
 export const bookTour = async tourId => {
     const stripe = Stripe('pk_test_tFzRlFeRIFMIr1wwOA842gqk00hzu5wJ2m');
+    console.log(stripe, 'What is wrong with stripe?');
     try {
         const session = await axios(`/api/v1/bookings/checkout-session/${tourId}`)
         await stripe.redirectToCheckout({
