@@ -4,6 +4,7 @@ import { bookTour, displayMap, deleteTour } from './tour';
 import { createReview, updateReview, deleteReview } from './review';
 import { addToFavorites, removeFromFavorites } from './favorites';
 import { showAlert } from './alerts';
+import { createNewBooking } from './booking';
 
 //Tours
 
@@ -259,3 +260,17 @@ if (dislikeTourBtn) {
 //Display Alert Message
 const alertMessage = document.querySelector('body').dataset.alert;
 if (alertMessage) showAlert('success', alertMessage, 20);
+
+//Create A New Booking
+const createNewBookingForm = document.querySelector('.form--create-new-booking');
+if (createNewBookingForm) {
+    createNewBookingForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        document.getElementById('createBookingNow').textContent = 'Processing...';
+        const tour = document.getElementById('name').value;
+        const user = document.getElementById('email').value;
+        const price = document.getElementById('price').value;
+        await createNewBooking(tour, user, price);
+        document.getElementById('createBookingNow').textContent = 'Create Booking';
+    });
+}

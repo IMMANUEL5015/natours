@@ -1,0 +1,18 @@
+extends layout/base
+
+block content
+    main.main
+        .signup-form#booking-form
+            h2.heading-secondary.ma-bt-lg Create New Booking
+            form.form.form--create-new-booking
+                .form__group
+                    label.form__label(for='email') User's Email address
+                    input#email.form__input(type='email', placeholder='you@example.com', required title='Please provide the email address of the user whom you want to book a tour for.')
+                .form__group
+                    label.form__label(for='name') Tour Name
+                    input#name.form__input(type='text', placeholder='The Snow Adventurer', required title='Please provide the name of the tour to be booked.')
+                .form__group.ma-bt-md
+                    label.form__label(for='price') Price
+                    input#price.form__input(type='number', placeholder='1500', required)
+                .form__group
+                    button#createBookingNow.btn.btn--green Create Booking

@@ -390,3 +390,9 @@ exports.alerts = (req, res, next) => {
     }
     next();
 }
+
+exports.getCreateBookingForm = (req, res, next) => {
+    res.status(200).render('booking/createBookingForm', {
+        title: 'Create New Booking'
+    });
+}

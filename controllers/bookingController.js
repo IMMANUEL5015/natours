@@ -80,6 +80,14 @@ exports.webhookCheckout = (req, res, next) => {
     }
 }
 
+exports.setTourUserIds = catchAsync(async (req, res, next) => {
+    if (req.body.tour.startsWith('5') && req.body.user.startsWith('5')) return next();
+
+    req.body.tour = (await Tour.findOne({ name: req.body.tour })).id;
+    req.body.user = (await User.findOne({ email: req.body.user })).id;
+    next();
+});
+
 exports.createBooking = factory.createOne(Booking);
 exports.getBooking = factory.getOne(Booking);
 exports.getAllBookings = factory.getAll(Booking);

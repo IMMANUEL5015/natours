@@ -13,7 +13,7 @@ router.get('/checkout-session/:tourId',
 router.use(authController.restrictTo('admin', 'lead-guide'));
 
 router.route('/')
-    .post(bookingController.createBooking)
+    .post(bookingController.setTourUserIds, bookingController.createBooking)
     .get(bookingController.getAllBookings);
 
 router.route('/:id')

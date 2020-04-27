@@ -84,4 +84,9 @@ router.get('/tour/:slug/reviews/:id/review-update-form',
 router.get('/my-favorite-tours', authController.protect,
     authController.restrictTo('user'),
     viewsController.getMyFavoriteTours);
+
+router.get('/create-new-booking', authController.protect,
+    authController.restrictTo('admin'),
+    viewsController.getCreateBookingForm);
+
 module.exports = router;
