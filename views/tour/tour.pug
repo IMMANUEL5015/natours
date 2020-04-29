@@ -75,6 +75,8 @@ block content
             - const paragraphs = tour.description.split('\n');
             each p in paragraphs
                 p.description__text= p
+            - if(user && user.role === 'admin')
+                a.btn.btn--green.see-all-bookings(href=`/tour/${tour.slug}/bookings`) See All Bookings
             - if (user && (user.role === 'user') && (user.hasAlreadyBookedTour) && (!userHasReviewedTour))
                 a.btn.btn--green.btn--small#review-form-link(href=`/tour/${tour.slug}/review-form`) Create Review
             - if(user && user.role === 'user' && user.hasAlreadyBookedTour && (!user.isAlreadyAFavorite))

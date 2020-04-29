@@ -19,7 +19,7 @@ block content
                         p.active Inactive User
                     .user-img
                         img(src=`img/users/${user.photo}`)
-                    a.btn.btn--green(href=`/users/${user._id}`) See More
+                    a.btn.btn--green(href=`/users/${user.email}`) See More
         .page
             a.page-links.btn.btn--green(href=`/users?page=${page - 1}`) Previous Page
             a.page-links.btn.btn--green(href=`/users?page=${page + 1}`) Next Page

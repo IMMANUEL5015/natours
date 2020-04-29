@@ -1,0 +1,16 @@
+extends layout/base
+
+block content
+    main.main 
+        .specific-booking-card.booking-card
+            h2.tourName Tour Name: #{booking.tour.name}
+            p.name Purchased By: #{booking.user.name}
+            .user-img
+                img(src=`/img/users/${booking.user.photo}`)
+            p.amount Booking Cost: #{booking.price} dollars
+            p.dateOfPurchase Date Of Purchase: #{booking.createdAt.toDateString()}
+            div
+                a#go-back(href=`/bookings`) Go Back
+            .see-booking-details
+                a#edit-booking.btn.btn--green(href=`/bookings/${booking._id}/edit`) Edit
+                button#deleteBooking.btn.btn--green(data-booking-id=`${booking._id}`) Delete

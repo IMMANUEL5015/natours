@@ -1,0 +1,13 @@
+extends layout/base
+
+block content
+    h1#bookings-heading #{tour.name} Bookings 
+    main.main 
+        .card-container
+            each booking in bookings
+                .booking-card
+                    h2.tourName Tour Name: #{tour.name}
+                    p.name Purchased By: #{booking.user.name}
+                    .user-img
+                        img(src=`/img/users/${booking.user.photo}`)
+                    a.btn.btn--green#see-booking-details(href=`/tour/${tour.slug}/bookings/${booking.id}`) See More

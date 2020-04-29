@@ -1324,6 +1324,15 @@ body {
 }
 /* my personal styles */
 
+/* Bookings */
+.see-all-bookings, #see-booking-details, #go-back{
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  margin-top: 10px;
+  margin-bottom: 10px; 
+}
+
 /* My Favorite Tours */
 #favoriteTours{
   margin: 20px;
@@ -1434,19 +1443,19 @@ label.radio__label{
 }
 
 /* users */
-.user-card{
+.booking-card, .user-card{
   border: 1px solid black;
   padding: 10px;
   text-align: center;
 }
 
-#users-overview-heading{
+#users-overview-heading, #bookings-heading{
   text-align: center;
   margin-top: 10px; 
   margin-bottom: 10px;
 }
 
-.emails, .active{
+.emails, .active, .name, .booking-card .dateOfPurchase{
   color: blue;
 }
 
@@ -1458,9 +1467,15 @@ label.radio__label{
   margin-bottom: 5px;
 }
 
-.user-card p{
+.user-card p, .booking-card p{
   font-size: 1.5em;
   font-weight: normal;
+  margin-bottom: 10px;
+}
+
+.booking-card .amount{
+  color: black;
+  font-weight: bold;
 }
 
 .page{
@@ -1476,7 +1491,7 @@ label.radio__label{
 }
 
 /* User details page */
-.user-details{
+.user-details, .specific-booking-card{
   max-width: 700px;
   width: 100%;
   border: 1px solid black;
@@ -1497,7 +1512,7 @@ label.radio__label{
 #go-back-link{
   font-size: 16px;
 }
-.see-review-details{
+.see-review-details, .see-booking-details{
   margin-top: 15px;
 }
 
@@ -1507,7 +1522,7 @@ label.radio__label{
   width: 100%;
 }
 
-.see-review-details button{
+.see-review-details button, .see-booking-details button{
   margin-left: 10px;
 }
 

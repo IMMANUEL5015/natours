@@ -58,10 +58,21 @@ router.get('/users',
     authController.restrictTo('admin'),
     viewsController.getUsersOverviewPage);
 
-router.route('/users/:id')
-    .get(authController.protect,
-        authController.restrictTo('admin'),
-        viewsController.getDataOfSpecificUser)
+router.get('/users/:email', authController.protect,
+    authController.restrictTo('admin'),
+    viewsController.getDataOfSpecificUser);
+
+router.get('/users/:email/bookings', authController.protect,
+    authController.restrictTo('admin'),
+    viewsController.getBookingsOfSpecificUser);
+
+router.get('/users/:email/bookings/:id', authController.protect,
+    authController.restrictTo('admin'),
+    viewsController.getSpecificBookingForUser);
+
+router.get('/users/:email/bookings/:id/booking-update-form', authController.protect,
+    authController.restrictTo('admin', 'lead-guide'),
+    viewsController.getBookingUpdateFormForUser);
 
 router.get('/reviews/:id', viewsController.getReviewDetails);
 
@@ -86,7 +97,31 @@ router.get('/my-favorite-tours', authController.protect,
     viewsController.getMyFavoriteTours);
 
 router.get('/create-new-booking', authController.protect,
-    authController.restrictTo('admin'),
+    authController.restrictTo('admin', 'lead-guide'),
     viewsController.getCreateBookingForm);
+
+router.get('/tour/:slug/bookings', authController.protect,
+    authController.restrictTo('admin', 'lead-guide'),
+    viewsController.getTourBookings);
+
+router.get('/tour/:slug/bookings/:id', authController.protect,
+    authController.restrictTo('admin', 'lead-guide'),
+    viewsController.getSpecificBookingForTour);
+
+router.get('/tour/:slug/bookings/:id/booking-update-form', authController.protect,
+    authController.restrictTo('admin', 'lead-guide'),
+    viewsController.getBookingUpdateFormForTour);
+
+router.get('/bookings', authController.protect,
+    authController.restrictTo('admin', 'lead-guide'),
+    viewsController.getAllBookings);
+
+router.get('/bookings/:id', authController.protect,
+    authController.restrictTo('admin', 'lead-guide'),
+    viewsController.getBooking);
+
+router.get('/bookings/:id/edit', authController.protect,
+    authController.restrictTo('admin', 'lead-guide'),
+    viewsController.getBookingUpdateForm);
 
 module.exports = router;

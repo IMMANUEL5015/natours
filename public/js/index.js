@@ -1,10 +1,24 @@
 import '@babel/polyfill';
-import { login, logout, forgotPassword, resetPassword, signup, updateSettings, deleteUser } from './user';
+import {
+    login, logout, forgotPassword,
+    resetPassword, signup,
+    updateSettings, deleteUser
+} from './user';
+
 import { bookTour, displayMap, deleteTour } from './tour';
 import { createReview, updateReview, deleteReview } from './review';
 import { addToFavorites, removeFromFavorites } from './favorites';
 import { showAlert } from './alerts';
-import { createNewBooking } from './booking';
+
+import {
+    createNewBooking,
+    updateSpecificBookingForTour,
+    deleteSpecificBookingForTour,
+    updateSpecificBookingForUser,
+    deleteSpecificBookingForUser,
+    updateSpecificBooking,
+    deleteSpecificBooking
+} from './booking';
 
 //Tours
 
@@ -272,5 +286,108 @@ if (createNewBookingForm) {
         const price = document.getElementById('price').value;
         await createNewBooking(tour, user, price);
         document.getElementById('createBookingNow').textContent = 'Create Booking';
+    });
+}
+
+//Update A Specific Booking For A Tour
+const updateBookingFormForTour = document.querySelector('.form--update-booking-for-tour');
+if (updateBookingFormForTour) {
+    updateBookingFormForTour.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        document.getElementById('updateBookingForTourNow').textContent = 'Processing...';
+        const tour = document.getElementById('name').value;
+        const user = document.getElementById('email').value;
+        const price = document.getElementById('price').value;
+
+        const { updateLink } = document.getElementById('updateBookingForTourNow').dataset;
+        const updateLinkItems = updateLink.split(',');
+        const tourId = updateLinkItems[0];
+        const bookingId = updateLinkItems[1];
+        const tourSlug = updateLinkItems[2];
+
+        await updateSpecificBookingForTour(tour, user, price, tourId, bookingId, tourSlug);
+        document.getElementById('updateBookingForTourNow').textContent = 'Update Booking';
+    });
+}
+
+//Delete A Specific Booking For Tour
+const deleteSpecificBookingForTourBtn = document.getElementById('deleteBookingForTour');
+if (deleteSpecificBookingForTourBtn) {
+    deleteSpecificBookingForTourBtn.addEventListener('click', async (e) => {
+        const { deleteLink } = document.getElementById('deleteBookingForTour').dataset;
+        const deleteLinkItems = deleteLink.split(',');
+        const tourId = deleteLinkItems[0];
+        const bookingId = deleteLinkItems[1];
+        const tourSlug = deleteLinkItems[2];
+
+        document.getElementById('deleteBookingForTour').textContent = 'Processing...';
+        await deleteSpecificBookingForTour(tourId, bookingId, tourSlug);
+        document.getElementById('deleteBookingForTour').textContent = 'Delete';
+    });
+}
+
+//Update A Specific Booking For A User
+const updateBookingFormForUser = document.querySelector('.form--update-booking-for-user');
+if (updateBookingFormForUser) {
+    updateBookingFormForUser.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        document.getElementById('updateBookingForUserNow').textContent = 'Processing...';
+        const tour = document.getElementById('name').value;
+        const user = document.getElementById('email').value;
+        const price = document.getElementById('price').value;
+
+        const { updateLink } = document.getElementById('updateBookingForUserNow').dataset;
+        const updateLinkItems = updateLink.split(',');
+        const userId = updateLinkItems[0];
+        const bookingId = updateLinkItems[1];
+        const userEmail = updateLinkItems[2];
+
+        await updateSpecificBookingForUser(tour, user, price, userId, bookingId, userEmail);
+        document.getElementById('updateBookingForUserNow').textContent = 'Update Booking';
+    });
+}
+
+//Delete A Specific Booking For Tour
+const deleteSpecificBookingForUserBtn = document.getElementById('deleteBookingForUser');
+if (deleteSpecificBookingForUserBtn) {
+    deleteSpecificBookingForUserBtn.addEventListener('click', async (e) => {
+        const { deleteLink } = document.getElementById('deleteBookingForUser').dataset;
+        const deleteLinkItems = deleteLink.split(',');
+        const userId = deleteLinkItems[0];
+        const bookingId = deleteLinkItems[1];
+        const userEmail = deleteLinkItems[2];
+
+        document.getElementById('deleteBookingForUser').textContent = 'Processing...';
+        await deleteSpecificBookingForUser(userId, bookingId, userEmail);
+        document.getElementById('deleteBookingForUser').textContent = 'Delete';
+    });
+}
+
+//Update A Specific Booking
+const updateBookingForm = document.querySelector('.form--update-booking');
+if (updateBookingForm) {
+    updateBookingForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        document.getElementById('updateBooking').textContent = 'Processing...';
+        const tour = document.getElementById('name').value;
+        const user = document.getElementById('email').value;
+        const price = document.getElementById('price').value;
+
+        const { bookingId } = document.getElementById('updateBooking').dataset;
+
+        await updateSpecificBooking(tour, user, price, bookingId);
+        document.getElementById('updateBooking').textContent = 'Update Booking';
+    });
+}
+
+//Delete A Specific Booking
+const deleteBooking = document.getElementById('deleteBooking');
+if (deleteBooking) {
+    deleteBooking.addEventListener('click', async (e) => {
+        const { bookingId } = document.getElementById('deleteBooking').dataset;
+
+        document.getElementById('deleteBooking').textContent = 'Processing...';
+        await deleteSpecificBooking(bookingId);
+        document.getElementById('deleteBooking').textContent = 'Delete';
     });
 }

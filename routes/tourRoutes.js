@@ -1,5 +1,6 @@
 const express = require('express');
 const tourController = require('../controllers/tourController');
+const bookingController = require('../controllers/bookingController');
 const viewsController = require('../controllers/viewsController');
 const authController = require('../controllers/authController');
 const reviewRoutes = require('./reviewRoutes');
@@ -51,5 +52,22 @@ router.delete('/:id/remove-from-favorites',
     viewsController.isAlreadyBooked,
     viewsController.errorIfNotBooked,
     tourController.removeTourFromUserFavorites);
+
+router.get('/:id/bookings', authController.protect,
+    authController.restrictTo('admin', 'lead-guide'),
+    tourController.getBookingsForTour);
+
+router.get('/:id/bookings/:booking_id', authController.protect,
+    authController.restrictTo('admin', 'lead-guide'),
+    tourController.getSpecificBookingForTour);
+
+router.patch('/:id/bookings/:booking_id', authController.protect,
+    authController.restrictTo('admin', 'lead-guide'),
+    bookingController.setTourUserIds,
+    tourController.updateSpecificBookingForTour);
+
+router.delete('/:id/bookings/:booking_id', authController.protect,
+    authController.restrictTo('admin', 'lead-guide'),
+    tourController.deleteSpecificBookingForTour);
 
 module.exports = router;

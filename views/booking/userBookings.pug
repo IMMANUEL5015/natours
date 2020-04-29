@@ -1,0 +1,15 @@
+extends layout/base
+
+block content
+    h1#bookings-heading #{user.name} Bookings 
+    main.main 
+        .card-container
+            each booking in bookings
+                .booking-card
+                    h2.tourName Tour Name: #{booking.tour.name}
+                    p.name Purchased By: #{user.name}
+                    .user-img
+                        img(src=`/img/users/${user.photo}`)
+                    a.btn.btn--green#see-booking-details(href=`/users/${user.email}/bookings/${booking.id}`) See More
+                    div
+                        a#go-back(href=`/users/${user.email}`) Go Back

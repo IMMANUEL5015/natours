@@ -1,0 +1,18 @@
+extends layout/base
+
+block content
+    main.main
+        .signup-form#booking-update-form
+            h2.heading-secondary.ma-bt-lg Update Booking
+            form.form.form--update-booking-for-user
+                .form__group
+                    label.form__label(for='email') Update User's Email address
+                    input#email.form__input(type='email', value=`${booking.user.email}`, required)
+                .form__group
+                    label.form__label(for='name') Update Tour Name
+                    input#name.form__input(type='text', value=`${booking.tour.name}`, required)
+                .form__group.ma-bt-md
+                    label.form__label(for='price') Update Price
+                    input#price.form__input(type='number', value=`${booking.price}`, required)
+                .form__group
+                    button(data-update-link=`${booking.user.id},${booking._id},${booking.user.email}`)#updateBookingForUserNow.btn.btn--green Update Booking

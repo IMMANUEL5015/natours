@@ -37,6 +37,23 @@ bookingSchema.pre(/^find/, function (next) {
     next();
 });
 
+//Remove A Tour From A User's Favorites List When The Corresponding Booking Is Deleted
+bookingSchema.pre(/^findOneAndDelete/, async function (next) {
+    this.booking = await this.findOne();
+    next();
+});
+
+bookingSchema.post(/^findOneAndDelete/, async function () {
+    const User = require('./userModel');
+    const bookingOwner = await User.findById(this.booking.user._id);
+    for (var i = 0; i < bookingOwner.favoriteTours.length; i++) {
+        if (bookingOwner.favoriteTours[i]._id.equals(this.booking.tour.id)) {
+            bookingOwner.favoriteTours.splice(i, 1);
+            return await bookingOwner.save({ validateBeforeSave: false });
+        }
+    }
+});
+
 const Booking = mongoose.model('Booking', bookingSchema);
 
 module.exports = Booking;

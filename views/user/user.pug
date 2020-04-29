@@ -16,11 +16,16 @@ block content
                 p.active Inactive User
             .user-img
                 img(src=`/img/users/${foundUser.photo}`)
-            div#favoriteTours
-                h2 Favorite Tours
-                ol
-                each tour in foundUser.favoriteTours
-                    li 
-                        a(href=`/tour/${tour.slug}`)= `${tour.name}`
+            - if(foundUser && foundUser.role === 'user')
+                div#favoriteTours
+                    - if(foundUser.favoriteTours.length > 0)
+                        h2 Favorite Tours
+                        ol
+                        each tour in foundUser.favoriteTours
+                            li 
+                                a(href=`/tour/${tour.slug}`)= `${tour.name}`
             a.page-links.btn.btn--green(href=`/users?page=1`) All Users            
             button.btn.btn--green#deleteUser(data-user-id=`${foundUser._id}`) Delete User
+            div
+                - if(foundUser.role === 'user')
+                    a.see-all-bookings(href=`/users/${foundUser.email}/bookings`) See All Bookings

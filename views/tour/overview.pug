@@ -43,3 +43,5 @@ block content
                             | 
                             span.card__footer-text= `rating (${tour.ratingsQuantity})`
                         a.btn.btn--green.btn--small(href=`/tour/${tour.slug}`) Details
+                    - if(user && user.role === 'admin')
+                        a.btn.btn--green.see-all-bookings(href=`/tour/${tour.slug}/bookings`) See All Bookings                    

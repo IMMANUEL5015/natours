@@ -1,6 +1,7 @@
 const multer = require('multer');
 const sharp = require('sharp');
 const User = require('../models/userModel');
+const Booking = require('../models/bookingModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const factory = require('./handlerFactory');
@@ -93,4 +94,56 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
         status: 'success',
         data: null
     });
+});
+
+exports.getBookingsForUser = catchAsync(async (req, res, next) => {
+    const bookings = await Booking.find({ user: req.params.id });
+    res.status(200).json({
+        status: 'success',
+        results: bookings.length,
+        data: bookings
+    })
+});
+
+exports.getSpecificBookingForUser = catchAsync(async (req, res, next) => {
+    const bookings = await Booking.find({ user: req.params.id });
+    for (var i = 0; i < bookings.length; i++) {
+        if (bookings[i]._id.equals(req.params.booking_id)) {
+            return res.status(200).json({
+                status: 'success',
+                data: bookings[i]
+            });
+        }
+    }
+    return next(new AppError('This booking does not exist or does not belong to this user', 404));
+});
+
+exports.updateSpecificBookingForUser = catchAsync(async (req, res, next) => {
+    const bookings = await Booking.find({ user: req.params.id });
+    for (var i = 0; i < bookings.length; i++) {
+        if (bookings[i]._id.equals(req.params.booking_id)) {
+            const booking = await Booking.findByIdAndUpdate(req.params.booking_id, req.body, {
+                new: true
+            });
+            return res.status(200).json({
+                status: 'success',
+                data: booking
+            });
+        }
+    }
+    return next(new AppError('This booking does not exist or does not belong to this user', 404));
+});
+
+exports.deleteSpecificBookingForUser = catchAsync(async (req, res, next) => {
+    const bookings = await Booking.find({ user: req.params.id });
+    for (var i = 0; i < bookings.length; i++) {
+        if (bookings[i]._id.equals(req.params.booking_id)) {
+            await Booking.findByIdAndDelete(req.params.booking_id);
+            return res.status(204).json({
+                status: 'success',
+                data: null
+            });
+        }
+    }
+    return next(new AppError('This booking does not exist or does not belong to this user', 404));
 });

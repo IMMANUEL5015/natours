@@ -1,7 +1,7 @@
 const multer = require('multer');
 const sharp = require('sharp');
 const Tour = require('../models/tourModel');
-//const Booking = require('../models/bookingModel');
+const Booking = require('../models/bookingModel');
 //const User = require('../models/userModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
@@ -266,4 +266,56 @@ exports.removeTourFromUserFavorites = catchAsync(async (req, res, next) => {
         status: 'fail',
         message: 'This tour is not among your favorite tours.'
     });
+});
+
+exports.getBookingsForTour = catchAsync(async (req, res, next) => {
+    const bookings = await Booking.find({ tour: req.params.id });
+    res.status(200).json({
+        status: 'success',
+        results: bookings.length,
+        data: bookings
+    });
+});
+
+exports.getSpecificBookingForTour = catchAsync(async (req, res, next) => {
+    const bookings = await Booking.find({ tour: req.params.id });
+    for (var i = 0; i < bookings.length; i++) {
+        if (bookings[i]._id.equals(req.params.booking_id)) {
+            return res.status(200).json({
+                status: 'success',
+                data: bookings[i]
+            });
+        }
+    }
+    return next(new AppError('This booking does not exist or does not belong to this tour', 404));
+});
+
+exports.updateSpecificBookingForTour = catchAsync(async (req, res, next) => {
+    const bookings = await Booking.find({ tour: req.params.id });
+    for (var i = 0; i < bookings.length; i++) {
+        if (bookings[i]._id.equals(req.params.booking_id)) {
+            const booking = await Booking.findByIdAndUpdate(req.params.booking_id, req.body, {
+                new: true
+            });
+            return res.status(200).json({
+                status: 'success',
+                data: booking
+            });
+        }
+    }
+    return next(new AppError('This booking does not exist or does not belong to this tour', 404));
+});
+
+exports.deleteSpecificBookingForTour = catchAsync(async (req, res, next) => {
+    const bookings = await Booking.find({ tour: req.params.id });
+    for (var i = 0; i < bookings.length; i++) {
+        if (bookings[i]._id.equals(req.params.booking_id)) {
+            await Booking.findByIdAndDelete(req.params.booking_id);
+            return res.status(204).json({
+                status: 'success',
+                data: null
+            });
+        }
+    }
+    return next(new AppError('This booking does not exist or does not belong to this tour', 404));
 });

@@ -1,5 +1,6 @@
 const express = require('express');
 const userController = require('../controllers/userController');
+const bookingController = require('../controllers/bookingController');
 const authController = require('../controllers/authController');
 const factory = require('../controllers/handlerFactory');
 
@@ -19,7 +20,7 @@ router.route('/me')
     .get(factory.getMe, userController.getUser)
     .patch(
         userController.uploadUserPhoto,
-        userController.resizeUserPhoto, 
+        userController.resizeUserPhoto,
         userController.updateMe)
     .delete(userController.deleteMe);
 
@@ -32,5 +33,22 @@ router.route('/:id')
     .get(userController.getUser)
     .patch(userController.updateUser)
     .delete(userController.deleteUser);
+
+router.get('/:id/bookings', authController.protect,
+    authController.restrictTo('admin', 'lead-guide'),
+    userController.getBookingsForUser);
+
+router.get('/:id/bookings/:booking_id', authController.protect,
+    authController.restrictTo('admin', 'lead-guide'),
+    userController.getSpecificBookingForUser);
+
+router.patch('/:id/bookings/:booking_id', authController.protect,
+    authController.restrictTo('admin', 'lead-guide'),
+    bookingController.setTourUserIds,
+    userController.updateSpecificBookingForUser);
+
+router.delete('/:id/bookings/:booking_id', authController.protect,
+    authController.restrictTo('admin', 'lead-guide'),
+    userController.deleteSpecificBookingForUser);
 
 module.exports = router;
