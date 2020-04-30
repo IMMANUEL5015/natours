@@ -59,6 +59,11 @@ const checkLoginAttempt = () => {
     return tryLoginAgainAt = Date.now() + (1 * 60 * 60 * 1000);
 }
 
+exports.loginAttempts = (req, res, next) => {
+    req.failedLoginAttempts = 0;
+    next();
+}
+
 exports.login = catchAsync(async (req, res, next) => {
     //If the time to login again has been reached, users should be able to log in
     if (Date.now() > tryLoginAgainAt) {

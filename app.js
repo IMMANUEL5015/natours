@@ -1,6 +1,7 @@
 //REQUIRE PERTINENT MODULES
 const path = require('path');
 const express = require('express');
+const expressIp = require('express-ip');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const morgan = require('morgan');
@@ -87,6 +88,8 @@ app.use(hpp({
     ]
 }));
 
+
+
 //Specify the time of a request
 app.use((req, res, next) => {
     req.requestTime = new Date().toISOString();
@@ -121,7 +124,9 @@ app.use('/api/v1/tours', /*cors(),*/ tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/bookings', bookingRouter);
 app.use(viewRouter);
-
+app.get('/ip', (req, res) => {
+    res.send(req.ip);
+});
 //Use Moment
 app.locals.moment = require('moment');
 
