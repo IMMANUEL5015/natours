@@ -129,7 +129,7 @@ app.get('/ip', (req, res) => {
     let ipAddr = req.headers["x-forwarded-for"];
     if (ipAddr) {
         var list = ipAddr.split(",");
-        ipAddr = list[list.length - 1];
+        ipAddr = list[0];
     } else {
         ipAddr = req.socket.remoteAddress;
     }
