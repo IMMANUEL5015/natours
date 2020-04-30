@@ -126,14 +126,7 @@ app.use('/api/v1/bookings', bookingRouter);
 app.use(viewRouter);
 
 app.get('/ip', (req, res) => {
-    let ipAddr = req.headers["x-forwarded-for"];
-    if (ipAddr) {
-        var list = ipAddr.split(",");
-        ipAddr = list[0];
-    } else {
-        ipAddr = req.socket.remoteAddress;
-    }
-    res.send(ippAddr);
+    res.send(req.headers['x-forwarded-for']);
 });
 
 //Use Moment
