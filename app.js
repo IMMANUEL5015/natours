@@ -124,9 +124,18 @@ app.use('/api/v1/tours', /*cors(),*/ tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/bookings', bookingRouter);
 app.use(viewRouter);
+
 app.get('/ip', (req, res) => {
-    res.send(req.ip);
+    let ipAddr = req.headers["x-forwarded-for"];
+    if (ipAddr) {
+        var list = ipAddr.split(",");
+        ipAddr = list[list.length - 1];
+    } else {
+        ipAddr = req.socket.remoteAddress;
+    }
+    res.send(ippAddr);
 });
+
 //Use Moment
 app.locals.moment = require('moment');
 
