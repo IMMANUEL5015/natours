@@ -76,7 +76,7 @@ If you wish to play around with the code base in your local environment, do the 
 
 ## Authentication
 * Users can create an account on the app.
-* Users can login an logout of the app.
+* Users can login and logout of the app.
 * Users can reset their password.
 * Users can update their password.
 
