@@ -2,7 +2,7 @@
 
 This full stack web application is specially designed for persons who love travelling and going on tour vacations.
 
-This app can be found at [https://natours-immanuel-diai.herokuapp.com/tour/the-park-camper](https://natours-immanuel-diai.herokuapp.com/tour/the-park-camper).
+This app can be found at [https://natours-immanuel-diai.herokuapp.com/tour/](https://natours-immanuel-diai.herokuapp.com/tour).
 The API for this app can be found at [https://documenter.getpostman.com/view/9735977/SzS4Qmbe](https://documenter.getpostman.com/view/9735977/SzS4Qmbe)
 
 ## Overview
@@ -123,7 +123,7 @@ If you wish to play around with the code base in your local environment, do the 
 
 ## Tour Guide
 * Almost like a normal user, but can neither book a tour nor review a tour.
-* You cannot sign up as a tour guide.
+* You cannot sign up as a tour guide!
 
 ## Notice
 The app is actually quite more complex than is indicated in this documentation.
