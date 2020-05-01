@@ -1,10 +1,9 @@
 const crypto = require('crypto');
-const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
-const User = require('../models/userModel');
-const catchAsync = require('../utils/catchAsync');
-const AppError = require('../utils/appError');
-const Email = require('../utils/email');
+const User = require('../../models/userModel');
+const catchAsync = require('../../utils/catchAsync');
+const AppError = require('../../utils/appError');
+const Email = require('../../utils/email');
 
 const signToken = id => {
     return jwt.sign({ id }, process.env.SECRET, {
@@ -13,7 +12,6 @@ const signToken = id => {
 }
 
 const createSendToken = (user, statusCode, req, res) => {
-    failedLoginAttempts = 0;
     //Prevent the password from showing up in the output
     user.password = undefined;
     const token = signToken(user.id);
@@ -47,35 +45,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     createSendToken(newUser, 201, req, res);
 });
 
-let failedLoginAttempts = 0;
-let tryLoginAgainAt;
-
-const checkLoginAttempt = () => {
-    //The time to login again should always be thesame once it is generated.
-    if (tryLoginAgainAt) {
-        return tryLoginAgainAt;
-    }
-    //The time to login again should be generated if it currently is not.
-    return tryLoginAgainAt = Date.now() + (1 * 60 * 60 * 1000);
-}
-
-exports.loginAttempts = (req, res, next) => {
-    req.failedLoginAttempts = 0;
-    next();
-}
-
 exports.login = catchAsync(async (req, res, next) => {
-    //If the time to login again has been reached, users should be able to log in
-    if (Date.now() > tryLoginAgainAt) {
-        failedLoginAttempts = 0;
-    }
-    //Else users should not be able to log in
-    if (failedLoginAttempts === parseInt(process.env.MAX_NUM_OF_LOGIN_ATTEMPTS)) {
-        checkLoginAttempt();
-        const timeRemaining = tryLoginAgainAt - Date.now();
-        return next(new AppError(`You have reached your maximum number of login attempts. Please try again in ${Math.ceil(timeRemaining / 1000 / 60)} minutes`, 401));
-    }
-
     const { email, password } = req.body;
 
     if (!email || !password) {
@@ -84,16 +54,8 @@ exports.login = catchAsync(async (req, res, next) => {
 
     const user = await User.findOne({ email }).select('+password');
 
-    //Calculate how many times a user can fail to login before having to wait for an hour
     if (!user || !(await user.correctPassword(password, user.password))) {
-        failedLoginAttempts = failedLoginAttempts + 1;
-        const trialsLeft = process.env.MAX_NUM_OF_LOGIN_ATTEMPTS - failedLoginAttempts;
-        if (trialsLeft === 0) {
-            checkLoginAttempt();
-            const timeRemaining = tryLoginAgainAt - Date.now();
-            return next(new AppError(`You have reached your maximum number of login attempts. Please try again in ${Math.ceil(timeRemaining / 1000 / 60)} minutes`, 401));
-        }
-        return next(new AppError(`Incorrect email or password. You have ${trialsLeft} trials left. If you have forgotten your password, please click on the forgot password link.`, 401));
+        return next(new AppError(`Incorrect email or password. If you have forgotten your password, please click on the forgot password link.`, 401));
     }
 
     createSendToken(user, 200, req, res);
@@ -108,77 +70,6 @@ exports.logout = (req, res) => {
         status: 'success',
         message: 'You have been logged out successfully.'
     });
-}
-
-exports.protect = catchAsync(async (req, res, next) => {
-    let token;
-
-    //1. Check if token is available
-    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-        token = req.headers.authorization.split(' ')[1];
-    } else if (req.cookies.jwt) {
-        token = req.cookies.jwt;
-    }
-
-    if (!token) return next(new AppError('Please login to gain access to this resource', 401));
-
-    //2. Verify the token
-    const decoded = await promisify(jwt.verify)(token, process.env.SECRET);
-
-    //3. Check if the owner of the token still exists
-    const currentUser = await User.findById(decoded.id);
-    if (!currentUser) {
-        return next(new AppError('The owner of the login credentials no longer exists.', 401));
-    }
-
-    //4. Check if the user's password was changed after the token was issued
-    if (currentUser.changedPasswordAfterTokenWasIssued(decoded.iat)) {
-        return next(new AppError('Password was changed recently. Please login again.', 401));
-    }
-
-    //Grant access to protected route
-    req.user = currentUser;
-    res.locals.user = currentUser;
-    next();
-});
-
-//Only for rendered pages, no errors
-exports.isLoggedIn = async (req, res, next) => {
-    try {
-        //1. Check if token is available
-        if (req.cookies.jwt) {
-            //2. Verify the token
-            const decoded = await promisify(jwt.verify)(req.cookies.jwt, process.env.SECRET);
-
-            //3. Check if the owner of the token still exists
-            const currentUser = await User.findById(decoded.id);
-            if (!currentUser) {
-                return next();
-            }
-
-            //4. Check if the user's password was changed after the token was issued
-            if (currentUser.changedPasswordAfterTokenWasIssued(decoded.iat)) {
-                return next();
-            }
-
-            //There is a logged in user
-            req.user = currentUser;
-            res.locals.user = currentUser;
-            return next();
-        }
-        return next();
-    } catch (err) {
-        return next();
-    }
-}
-
-exports.restrictTo = (...roles) => {
-    return (req, res, next) => {
-        if (!roles.includes(req.user.role)) {
-            return next(new AppError('You do not have permission to perform this action!', 403));
-        }
-        next();
-    }
 }
 
 exports.forgotPassword = catchAsync(async (req, res, next) => {

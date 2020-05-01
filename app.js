@@ -1,7 +1,6 @@
 //REQUIRE PERTINENT MODULES
 const path = require('path');
 const express = require('express');
-const expressIp = require('express-ip');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const morgan = require('morgan');
@@ -9,17 +8,19 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
-const flash = require('connect-flash');
 const compression = require('compression');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const tourRouter = require('./routes/tourRoutes');
-const userRouter = require('./routes/userRoutes');
-const viewRouter = require('./routes/viewRoutes');
-const bookingRouter = require('./routes/bookingRoutes');
-const bookingController = require('./controllers/bookingController');
+const tourRouter = require('./routes/api/tourRoutes');
+const userRouter = require('./routes/api/userRoutes');
+const bookingRouter = require('./routes/api/bookingRoutes');
+const userViewsRouter = require('./routes/views/userRoutes');
+const bookingViewsRouter = require('./routes/views/bookingRoutes');
+const reviewsViewsRouter = require('./routes/views/reviewsRoutes');
+const tourViewsRouter = require('./routes/views/tourRoutes');
+const bookingController = require('./controllers/api/bookingController');
 const AppError = require('./utils/appError');
-const globalErrorHandler = require('./controllers/errorController');
+const globalErrorHandler = require('./controllers/api/errorController');
 const app = express();
 
 //MIDDLEWARES
@@ -99,9 +100,6 @@ app.use((req, res, next) => {
 //Access custom assets
 app.use(express.static(path.join(__dirname, 'public')));
 
-//Use connect flash
-app.use(flash());
-
 //req.flash requires session
 app.use(require('express-session')({
     resave: false,
@@ -112,22 +110,14 @@ app.use(require('express-session')({
 //Compress all our text responses
 app.use(compression());
 
-//Pass variables to templates using middleware
-app.use(function (req, res, next) {
-    res.locals.error = req.flash('error');
-    res.locals.success = req.flash('success');
-    next();
-});
-
 //ROUTES
 app.use('/api/v1/tours', /*cors(),*/ tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/bookings', bookingRouter);
-app.use(viewRouter);
-
-app.get('/ip', (req, res) => {
-    res.send(req.headers['x-forwarded-for']);
-});
+app.use(tourViewsRouter);
+app.use(userViewsRouter);
+app.use(bookingViewsRouter);
+app.use(reviewsViewsRouter);
 
 //Use Moment
 app.locals.moment = require('moment');

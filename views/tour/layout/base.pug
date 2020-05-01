@@ -11,8 +11,6 @@ html
             title Natours | #{title}
 
     body(data-alert=`${alert ? alert : ''}`)
-        - if(success && success.length > 0)
-            .alert.alert--success #{success}
         // HEADER
         include _header
 

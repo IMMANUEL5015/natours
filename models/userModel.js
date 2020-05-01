@@ -102,9 +102,9 @@ userSchema.methods.createPasswordResetToken = function () {
 
 //QUERY MIDDLEWARES
 
-userSchema.pre(/^find/, function (next) {
+userSchema.pre(/^findOne/, function (next) {
     //this.find({ active: { $ne: false } });
-    this.populate('favoriteTours');
+    this.populate({ path: 'favoriteTours' });
     next();
 });
 

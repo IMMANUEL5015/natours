@@ -1,4 +1,4 @@
-const AppError = require('../utils/appError');
+const AppError = require('../../utils/appError');
 
 const handleJwtError = () => new AppError('An error occured. Please login again.', 401);
 const handleTokenExpiredError = () => new AppError('You have been logged out of the application. Please login again.', 401)

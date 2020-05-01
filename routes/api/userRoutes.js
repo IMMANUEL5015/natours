@@ -1,8 +1,8 @@
 const express = require('express');
-const userController = require('../controllers/userController');
-const bookingController = require('../controllers/bookingController');
-const authController = require('../controllers/authController');
-const factory = require('../controllers/handlerFactory');
+const userController = require('../../controllers/api/userController');
+const authController = require('../../controllers/api/authController');
+const middleware = require('../../controllers/middlewares');
+const factory = require('../../controllers/api/handlerFactory');
 
 const router = express.Router();
 
@@ -12,7 +12,7 @@ router.get('/logout', authController.logout);
 router.post('/forgotPassword', authController.forgotPassword);
 router.patch('/resetPassword/:token', authController.resetPassword);
 
-router.use(authController.protect);
+router.use(middleware.protect);
 
 router.patch('/updatePassword', authController.updatePassword);
 
@@ -24,7 +24,7 @@ router.route('/me')
         userController.updateMe)
     .delete(userController.deleteMe);
 
-router.use(authController.restrictTo('admin'));
+router.use(middleware.restrictTo('admin'));
 
 router.route('/')
     .get(userController.getAllUsers);
@@ -34,21 +34,21 @@ router.route('/:id')
     .patch(userController.updateUser)
     .delete(userController.deleteUser);
 
-router.get('/:id/bookings', authController.protect,
-    authController.restrictTo('admin', 'lead-guide'),
+router.get('/:id/bookings', middleware.protect,
+    middleware.restrictTo('admin', 'lead-guide'),
     userController.getBookingsForUser);
 
-router.get('/:id/bookings/:booking_id', authController.protect,
-    authController.restrictTo('admin', 'lead-guide'),
+router.get('/:id/bookings/:booking_id', middleware.protect,
+    middleware.restrictTo('admin', 'lead-guide'),
     userController.getSpecificBookingForUser);
 
-router.patch('/:id/bookings/:booking_id', authController.protect,
-    authController.restrictTo('admin', 'lead-guide'),
-    bookingController.setTourUserIds,
+router.patch('/:id/bookings/:booking_id', middleware.protect,
+    middleware.restrictTo('admin', 'lead-guide'),
+    middleware.setTourUserIds,
     userController.updateSpecificBookingForUser);
 
-router.delete('/:id/bookings/:booking_id', authController.protect,
-    authController.restrictTo('admin', 'lead-guide'),
+router.delete('/:id/bookings/:booking_id', middleware.protect,
+    middleware.restrictTo('admin', 'lead-guide'),
     userController.deleteSpecificBookingForUser);
 
 module.exports = router;

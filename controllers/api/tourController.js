@@ -1,10 +1,9 @@
 const multer = require('multer');
 const sharp = require('sharp');
-const Tour = require('../models/tourModel');
-const Booking = require('../models/bookingModel');
-//const User = require('../models/userModel');
-const catchAsync = require('../utils/catchAsync');
-const AppError = require('../utils/appError');
+const Tour = require('../../models/tourModel');
+const Booking = require('../../models/bookingModel');
+const catchAsync = require('../../utils/catchAsync');
+const AppError = require('../../utils/appError');
 const factory = require('./handlerFactory');
 const slugify = require('slugify');
 
@@ -216,26 +215,6 @@ exports.getMonthlyPlan = catchAsync(async (req, res, next) => {
         }
     });
 });
-
-exports.isAlreadyAFavorite = (req, res, next) => {
-    if (req.user) {
-        if (req.params.id) {
-            if (req.user.favoriteTours.includes(req.params.id)) {
-                return next(new AppError('This tour is already one of your favorite tours.', 403));
-            }
-        }
-
-        if (req.params.slug) {
-            const favouriteTours = req.user.favoriteTours;
-            const favoriteToursSlugs = favouriteTours.map(el => el.slug);
-            if (favoriteToursSlugs.includes(req.params.slug)) {
-                res.locals.user.isAlreadyAFavorite = true;
-            }
-        }
-    }
-
-    next();
-}
 
 exports.addTourToUserFavorites = catchAsync(async (req, res, next) => {
     const user = req.user;
