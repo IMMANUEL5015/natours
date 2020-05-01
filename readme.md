@@ -2,7 +2,7 @@
 
 This full stack web application is specially designed for persons who love travelling and going on tour vacations.
 
-This app can be found at [https://natours-immanuel-diai.herokuapp.com/tour/](https://natours-immanuel-diai.herokuapp.com/tour).
+This app can be found at [https://natours-immanuel-diai.herokuapp.com/](https://natours-immanuel-diai.herokuapp.com/).
 The API for this app can be found at [https://documenter.getpostman.com/view/9735977/SzS4Qmbe](https://documenter.getpostman.com/view/9735977/SzS4Qmbe)
 
 ## Overview
