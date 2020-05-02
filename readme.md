@@ -66,66 +66,55 @@ If you wish to play around with the code base in your local environment, do the 
 * Your app should be running just fine.
 ```
 
-## Table Of Contents
-- [Authentication](#authentication)
+## Main Features
 - [Users](#users)
-- [Admin](#admin)
-- [Lead Guide](#lead-guide)
-- [Tour Guide](#tour-guide)
+- [Tours](#tours)
+- [Bookings](#bookings)
+- [Reviews](#reviews)
+- [Favorite Tours](#favorite-tours)
 - [Notice](#notice)
 
-## Authentication
-* Users can create an account on the app.
-* Users can login and logout of the app.
-* Users can reset their password.
-* Users can update their password.
-
 ## Users
+* Users can sign up with the application.
+* Users can log into the application.
+* Users can log out of the appication.
+* Users can update their password.
+* Users can reset their password
 * Users can update their general information.
 * Users can see their profile page.
-* Users can see all the tours as well as detailed information about each tour.
-* Users can book any tour of their choice, provided they can pay for it. (You don't really have to pay. You can input fake credit card details).
-* Users can see all the tours they have booked.
-* Users can write reviews for tours they have booked.
-* Users can see all the reviews for each tour.
-* Users can see specific reviews in detail.
-* Users can edit and delete their own reviews.
-* Users can add any of the tours they have booked to their list of favorite tours.
-* Users can remove a favorite tour from their list of favorite tours.
-* When you sign up, the above are the major things you will be able to do on the app.
+* A user can be either a regular user or an admin or a lead-guide or a guide.
+* When you sign up, you are a regular user by default.
 
-## Admin
-* The most powerful figure in this application
-* An admin can create a tour.
-* An admin can see all tours.
-* An admin can see each tour in detail.
-* An admin can edit a tour.
-* An admin can delete a tour.
-* An admin can see all the users of the application.
-* An admin can see the non-sensitive details of a specific user.
-* An admin can delete a user from the app.
-* An admin can delete a review.
-* An admin can see all reviews.
-* An admin can see the details of each reviews.
-* An admin can create a booking for a user manually (without payment).
-* An admin can see all the bookings belonging to a user.
-* An admin can see all the bookings belonging to a tour.
-* An admin can see all the bookings on the app.
-* An admin can see the details of each booking on the app.
-* An admin can edit any booking.
-* An admin can delete any booking.
-* You cannot sign up as an admin! It is a privilege reserved for the app's creator.
+## Tours
+* Tours can be created by an admin user or a lead-guide.
+* Tours can be seen by every user.
+* Tours can be updated by an admin user or a lead-guide.
+* Tours can be deleted by an admin user or a lead-guide.
 
-## Lead Guide
-* The second most powerful figure in this application
-* Can do almost anything an admin can do except tampering with user's information. (Such as deleting a user from the app).
-* You cannot sign up as a lead-guide!
+## Bookings
+* Only regular users can book tours (make a payment).
+* Regular users can not book thesame tour twice.
+* Regular users can see all the tours thay have booked.
+* An admin user or a lead-guide can see every booking on the app.
+* An admin user or a lead-guide can delete any booking.
+* An admin user or a lead-guide can create a booking (manually, without payment).
+* An admin user or a lead-guide can not create a bookng for thesame user twice.
+* An admin user or a lead-guide can edit any booking.
 
-## Tour Guide
-* Almost like a normal user, but can neither book a tour nor review a tour.
-* You cannot sign up as a tour guide!
+## Reviews
+* Only regular users can write reviews for tours which they have booked.
+* All users can see the reviews of each tour.
+* Regular users can edit and delete their own reviews.
+* Regular users can not review thesame tour twice.
+* An admin can delete any review.
+
+## Favorite Tours
+* A regular user can add any of their booked tours to their list of favorite tours.
+* A regular user can remove a tour from their list of favorite tours.
+* A regular user can not add a tour to their list of favorite tours, when it is already a favorite.
 
 ## Notice
 The app is actually quite more complex than is indicated in this documentation.
 Nevertheless, this summary is enough to help you understand the major features of the app.
 You are welcome to make improvements on the app.
+Please use the link specified at the beginning of the document to preview the app.
