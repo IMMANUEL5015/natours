@@ -5,7 +5,7 @@ const AppError = require('../../utils/appError');
 exports.deleteOne = Model => catchAsync(async (req, res, next) => {
     const doc = await Model.findByIdAndDelete(req.params.id);
     if (!doc) {
-        return next(new AppError('This tour does not exist or has already been deleted.', 404));
+        return next(new AppError(`This ${Model} does not exist or has already been deleted.`, 404));
     }
     res.status(204).json({
         status: 'Success',
